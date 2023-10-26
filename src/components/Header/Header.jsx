@@ -8,41 +8,69 @@ import {
   Menu,
   MenuItem,
   Divider,
-  Paper,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import AirBnb from "../../assets/img/logo.png";
 import { colorConfigs } from "../../configs/colorConfigs";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SearchIcon from "@mui/icons-material/Search";
+import LanguageIcon from "@mui/icons-material/Language";
 
 const Logo = styled("a")`
   display: flex;
   align-items: center;
   position: relative;
   cursor: pointer;
-  &::after {
-    position: absolute;
-    content: "airbnb";
-    right: -50px;
-    font-size: 24px;
-    font-weight: bold;
-    color: ${colorConfigs.color.primary.maim};
-  }
 `;
-
 const MainButton = styled(Button)`
-  margin-left: auto;
-  padding: 10px 15px;
   border-radius: 50px;
-  transition: 0.2s ease-in-out;
+  text-transform: none;
+`;
+const ListButton = styled(ListItemButton)`
+  position: relative;
+  transition: 0.3s ease-in-out;
+  &::before {
+    text-align: center;
+    position: absolute;
+    content: "";
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    transform: scale(0);
+    background-color: black;
+  }
   &:hover {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: transparent !important;
+    &::before {
+      transition: 0.3s ease-in-out;
+      transform: scale(1);
+    }
+  }
+  &.Mui-selected {
+    background-color: transparent;
+    &::before {
+      text-align: center;
+      position: absolute;
+      content: "";
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      transform: scale(1);
+      background-color: black;
+    }
   }
 `;
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedButton, setSelectedButton] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleOpenMenu = (e) => {
@@ -53,29 +81,84 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const handleSelectedButton = (item) => {
+    if (selectedButton === item) {
+      setSelectedButton(null);
+    } else {
+      setSelectedButton(item);
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" variant="elevation" color="inherit">
+      <AppBar
+        sx={{ transition: "0.3s all" }}
+        position="static"
+        variant="elevation"
+        color="inherit"
+      >
         <Toolbar>
-          {/* LOGO */}
-          <Logo>
-            <Typography
-              sx={{ display: "block" }}
-              component="img"
-              width={100}
-              src={AirBnb}
-              alt="AirBnb"
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "10px 0px",
+            }}
+          >
+            {/* LOGO */}
+            <Logo>
+              <Typography
+                sx={{ display: "block" }}
+                component="img"
+                width={100}
+                src={AirBnb}
+                alt="AirBnb"
+              />
+            </Logo>
+            {/* Search System */}
+            <Box sx={{ m: "auto" }} component="div">
+              <List sx={{ display: "flex", gap: "10px" }}>
+                <ListButton
+                  disableTouchRipple
+                  onClick={() => handleSelectedButton("item1")}
+                  selected={selectedButton === "item1"}
+                >
+                  Chỗ Ở
+                </ListButton>
+                <ListButton
+                  disableTouchRipple
+                  onClick={() => handleSelectedButton("item2")}
+                  selected={selectedButton === "item2"}
+                >
+                  Trải Nghiệm
+                </ListButton>
+                <ListButton
+                  disableTouchRipple
+                  onClick={() => handleSelectedButton("item3")}
+                  selected={selectedButton === "item3"}
+                >
+                  Trải Nghiệm Trực Tuyến
+                </ListButton>
+              </List>
+            </Box>
+            {/*Choose Language Button */}
+            <IconButton>
+              <LanguageIcon />
+            </IconButton>
+            {/* Signin/Signup Button */}
+            <MainButton
+              onClick={handleOpenMenu}
+              color="inherit"
+              variant="outlined"
+              aria-label="sing-in-sign-up-button"
+              startIcon={<MenuIcon />}
+              endIcon={
+                <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
+              }
             />
-          </Logo>
-          {/* Signin/Signup Button */}
-          <MainButton
-            onClick={handleOpenMenu}
-            color="inherit"
-            variant="outlined"
-            aria-label="sing-in-sign-up-button"
-            startIcon={<MenuIcon />}
-            endIcon={<AccountCircleIcon />}
-          />
+          </Box>
         </Toolbar>
         {/* Menu open when onclick by MainButton */}
         <Menu
