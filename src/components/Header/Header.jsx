@@ -10,8 +10,8 @@ import {
   Divider,
   IconButton,
   List,
-  ListItem,
   ListItemButton,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import AirBnb from "../../assets/img/logo.png";
@@ -20,6 +20,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import LanguageIcon from "@mui/icons-material/Language";
+import DatePicker from "../DatePicker/DatePicker";
 
 const Logo = styled("a")`
   display: flex;
@@ -117,7 +118,7 @@ export default function Header() {
                 alt="AirBnb"
               />
             </Logo>
-            {/* Search System */}
+            {/* List Buttons*/}
             <Box sx={{ m: "auto" }} component="div">
               <List sx={{ display: "flex", gap: "10px" }}>
                 <ListButton
@@ -160,6 +161,22 @@ export default function Header() {
             />
           </Box>
         </Toolbar>
+        {/* Search System */}
+        <Box component="form">
+          <TextField
+            variant="outlined"
+            type="search"
+            placeholder="Tìm địa điểm đến"
+            inputProps={{
+              style: {
+                border: "none",
+              },
+            }}
+          />
+          <DatePicker />
+          <DatePicker />
+        </Box>
+
         {/* Menu open when onclick by MainButton */}
         <Menu
           slotProps={{
