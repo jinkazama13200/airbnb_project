@@ -3,6 +3,7 @@ import { TextField, styled } from "@mui/material";
 
 const CustomTextField = styled(TextField)`
   & .MuiOutlinedInput-notchedOutline {
+    border: none;
   }
 `;
 
@@ -11,7 +12,7 @@ export default function DatePicker() {
   return (
     <CustomTextField
       type="date"
-      variant="outlined"
+      variant="standard"
       InputProps={{
         inputProps: {
           min: today,

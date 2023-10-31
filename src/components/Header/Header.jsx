@@ -21,6 +21,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import LanguageIcon from "@mui/icons-material/Language";
 import DatePicker from "../DatePicker/DatePicker";
+import { useQuery } from "@tanstack/react-query";
+import { getLocation } from "../../apis/positionAPI";
 
 const Logo = styled("a")`
   display: flex;
@@ -69,10 +71,28 @@ const ListButton = styled(ListItemButton)`
   }
 `;
 
+const StyledTextField = styled(TextField)`
+  & .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+`;
+
+const StyledBox = styled(Box)`
+  padding: 10px 20px;
+  border-radius: 32px;
+  cursor: pointer;
+`;
+
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
+  const [focusedBox, setFocusedBox] = useState(null);
   const open = Boolean(anchorEl);
+
+  const { data: location = [] } = useQuery({
+    queryKey: ["location"],
+    queryFn: getLocation,
+  });
 
   const handleOpenMenu = (e) => {
     setAnchorEl(e.currentTarget);
@@ -80,6 +100,13 @@ export default function Header() {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleBoxFocus = (box) => {
+    setFocusedBox(box);
+  };
+  const handleBoxBlur = () => {
+    setFocusedBox(null);
   };
 
   const handleSelectedButton = (item) => {
@@ -92,13 +119,8 @@ export default function Header() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        sx={{ transition: "0.3s all" }}
-        position="static"
-        variant="elevation"
-        color="inherit"
-      >
-        <Toolbar>
+      <AppBar position="static" variant="elevation" color="inherit">
+        <Toolbar sx={{ transition: "0.3s all" }}>
           <Box
             sx={{
               flexGrow: 1,
@@ -161,20 +183,101 @@ export default function Header() {
             />
           </Box>
         </Toolbar>
+
         {/* Search System */}
-        <Box component="form">
-          <TextField
-            variant="outlined"
-            type="search"
-            placeholder="Tìm địa điểm đến"
-            inputProps={{
-              style: {
-                border: "none",
-              },
+        <Box
+          sx={{
+            bgcolor: focusedBox !== null ? "lightgrey" : "",
+            display: "flex",
+            borderRadius: "50px",
+            border: "1px solid lightgrey",
+            m: "auto",
+            marginBottom: "10px",
+            transition: "0.3s ease-in-out",
+          }}
+          autoComplete="off"
+          component="div"
+        >
+          {/* Find Location Part */}
+          <StyledBox
+            sx={{
+              bgcolor: focusedBox === 0 ? "white" : "",
+              borderRadius: focusedBox === 0 ? "32px" : "",
+              boxShadow:
+                focusedBox === 0 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
             }}
-          />
-          <DatePicker />
-          <DatePicker />
+            component="div"
+            onFocus={() => handleBoxFocus(0)}
+            onBlur={handleBoxBlur}
+          >
+            <Typography variant="subtitle2">Địa điểm</Typography>
+            <StyledTextField
+              variant="standard"
+              type="search"
+              placeholder="Tìm địa điểm đến"
+              inputProps={{
+                style: {
+                  border: "none",
+                },
+              }}
+            />
+          </StyledBox>
+          {/* Start Date Part */}
+          <StyledBox
+            sx={{
+              bgcolor: focusedBox === 1 ? "white" : "",
+              borderRadius: focusedBox === 1 ? "32px" : "",
+              boxShadow:
+                focusedBox === 1 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+            }}
+            component="div"
+            onFocus={() => handleBoxFocus(1)}
+            onBlur={handleBoxBlur}
+          >
+            <Typography variant="subtitle2">Nhận phòng</Typography>
+            <DatePicker />
+          </StyledBox>
+          {/* End Date Part */}
+          <StyledBox
+            sx={{
+              bgcolor: focusedBox === 2 ? "white" : "",
+              borderRadius: focusedBox === 2 ? "32px" : "",
+              boxShadow:
+                focusedBox === 2 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+            }}
+            component="div"
+            onFocus={() => handleBoxFocus(2)}
+            onBlur={handleBoxBlur}
+          >
+            <Typography variant="subtitle2">Trả phòng</Typography>
+            <DatePicker />
+          </StyledBox>
+          {/* Guest Part */}
+          <StyledBox
+            sx={{
+              display: "flex",
+              gap: "5px",
+              bgcolor: focusedBox === 3 ? "white" : "",
+              borderRadius: focusedBox === 3 ? "32px" : "",
+              boxShadow:
+                focusedBox === 3 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+            }}
+            component="div"
+            onFocus={() => handleBoxFocus(3)}
+            onBlur={handleBoxBlur}
+          >
+            <Box component="div">
+              <Typography variant="subtitle2">Khách</Typography>
+              <Typography variant="subtitle2">0</Typography>
+            </Box>
+            <Button
+              variant="contained"
+              color={"inherit"}
+              sx={{ borderRadius: "32px" }}
+            >
+              <SearchIcon />
+            </Button>
+          </StyledBox>
         </Box>
 
         {/* Menu open when onclick by MainButton */}

@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ClientLayout from "./layouts/ClientLayout/ClientLayout";
 import Home from "./module/home/Home";
-import Detail from "./module/detail/Detail";
+import RoomList from "./module/roomlist/RoomList";
+import RoomDetails from "./module/roomdetails/RoomDetails";
 
 function App() {
   return (
@@ -9,8 +10,11 @@ function App() {
       <Routes>
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Home />} />
-          <Route path="detail" element={<Detail />} />
+          <Route path="roomlist/:locationId" element={<RoomList />} />
+          <Route path="roomdetails/:roomId" element={<RoomDetails />} />
         </Route>
+
+        <Route path="*" element={<div>NOT FOUND</div>} />
       </Routes>
     </BrowserRouter>
   );
