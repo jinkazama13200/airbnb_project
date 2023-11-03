@@ -12,7 +12,6 @@ import {
   styled,
 } from "@mui/material";
 import currencyFormat from "../../currencyFomat";
-import { colorConfigs } from "../../configs/colorConfigs";
 
 export default function RoomList() {
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ export default function RoomList() {
     queryFn: () => getRoomListById(locationId),
     enabled: !!locationId,
   });
-  console.log(roomList);
 
   const RoomImg = styled("img")`
     width: 100%;

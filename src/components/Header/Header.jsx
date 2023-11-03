@@ -14,8 +14,8 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import AirBnb from "../../assets/img/logo.png";
 import { colorConfigs } from "../../configs/colorConfigs";
+import AirBnb from "../../assets/img/logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
@@ -32,7 +32,6 @@ const Logo = styled("a")`
 `;
 const MainButton = styled(Button)`
   border-radius: 50px;
-  text-transform: none;
 `;
 const ListButton = styled(ListItemButton)`
   position: relative;
@@ -71,9 +70,19 @@ const ListButton = styled(ListItemButton)`
   }
 `;
 
+const SearchButton = styled(Button)`
+  &.MuiButton-root {
+    background-color: ${colorConfigs.color.primary.main};
+    border-radius: 50px;
+  }
+`;
+
 const StyledTextField = styled(TextField)`
   & .MuiOutlinedInput-notchedOutline {
     border: none;
+  }
+  & .MuiInputBase-root.MuiInput-root::after {
+    border-bottom: 2px solid ${colorConfigs.color.primary.main};
   }
 `;
 
@@ -235,7 +244,7 @@ export default function Header() {
             onBlur={handleBoxBlur}
           >
             <Typography variant="subtitle2">Nhận phòng</Typography>
-            <DatePicker />
+            <DatePicker variant="standard" type="date" />
           </StyledBox>
           {/* End Date Part */}
           <StyledBox
@@ -250,7 +259,7 @@ export default function Header() {
             onBlur={handleBoxBlur}
           >
             <Typography variant="subtitle2">Trả phòng</Typography>
-            <DatePicker />
+            <DatePicker variant="standard" type="date" />
           </StyledBox>
           {/* Guest Part */}
           <StyledBox
@@ -270,13 +279,9 @@ export default function Header() {
               <Typography variant="subtitle2">Khách</Typography>
               <Typography variant="subtitle2">0</Typography>
             </Box>
-            <Button
-              variant="contained"
-              color={"inherit"}
-              sx={{ borderRadius: "32px" }}
-            >
+            <SearchButton variant="contained">
               <SearchIcon />
-            </Button>
+            </SearchButton>
           </StyledBox>
         </Box>
 
