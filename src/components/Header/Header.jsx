@@ -11,7 +11,8 @@ import {
   IconButton,
   List,
   ListItemButton,
-  TextField,
+  FormControl,
+  Select,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { colorConfigs } from "../../configs/colorConfigs";
@@ -23,6 +24,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import DatePicker from "../DatePicker/DatePicker";
 import { useQuery } from "@tanstack/react-query";
 import { getLocation } from "../../apis/positionAPI";
+import { useNavigate } from "react-router-dom";
 
 const Logo = styled("a")`
   display: flex;
@@ -77,13 +79,11 @@ const SearchButton = styled(Button)`
   }
 `;
 
-const StyledTextField = styled(TextField)`
-  & .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-  & .MuiInputBase-root.MuiInput-root::after {
+const StyledSelect = styled(Select)`
+  &::after {
     border-bottom: 2px solid ${colorConfigs.color.primary.main};
   }
+  width: 150px;
 `;
 
 const StyledBox = styled(Box)`
@@ -93,13 +93,16 @@ const StyledBox = styled(Box)`
 `;
 
 export default function Header() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
+  const [locationSelected, setLocationSelected] = useState("");
   const [focusedBox, setFocusedBox] = useState(null);
+
   const open = Boolean(anchorEl);
 
   const { data: location = [] } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["locations"],
     queryFn: getLocation,
   });
 
@@ -126,6 +129,22 @@ export default function Header() {
     }
   };
 
+  const handleSelectedLocation = () => {
+    if (!locationSelected) return;
+    navigate(`roomlist/${locationSelected}`);
+    setLocationSelected("");
+  };
+
+  const renderLocation = (array) => {
+    return array.map((item) => {
+      return (
+        <MenuItem value={item.id} key={item.id}>
+          {item.tenViTri}, {item.tinhThanh}, {item.quocGia}
+        </MenuItem>
+      );
+    });
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" variant="elevation" color="inherit">
@@ -140,7 +159,7 @@ export default function Header() {
             }}
           >
             {/* LOGO */}
-            <Logo>
+            <Logo onClick={() => window.location.replace("/")}>
               <Typography
                 sx={{ display: "block" }}
                 component="img"
@@ -209,6 +228,7 @@ export default function Header() {
         >
           {/* Find Location Part */}
           <StyledBox
+            maxWidth="fit-content"
             sx={{
               bgcolor: focusedBox === 0 ? "white" : "",
               borderRadius: focusedBox === 0 ? "32px" : "",
@@ -220,16 +240,18 @@ export default function Header() {
             onBlur={handleBoxBlur}
           >
             <Typography variant="subtitle2">Địa điểm</Typography>
-            <StyledTextField
-              variant="standard"
-              type="search"
-              placeholder="Tìm địa điểm đến"
-              inputProps={{
-                style: {
-                  border: "none",
-                },
-              }}
-            />
+            <FormControl>
+              <StyledSelect
+                value={locationSelected}
+                onChange={(e) => {
+                  setLocationSelected(e.target.value);
+                }}
+                label="Chọn địa điểm đến"
+                variant="standard"
+              >
+                {location && renderLocation(location)}
+              </StyledSelect>
+            </FormControl>
           </StyledBox>
           {/* Start Date Part */}
           <StyledBox
@@ -279,7 +301,7 @@ export default function Header() {
               <Typography variant="subtitle2">Khách</Typography>
               <Typography variant="subtitle2">0</Typography>
             </Box>
-            <SearchButton variant="contained">
+            <SearchButton onClick={handleSelectedLocation} variant="contained">
               <SearchIcon />
             </SearchButton>
           </StyledBox>
@@ -321,6 +343,7 @@ export default function Header() {
           <MenuItem>Cho thuê chỗ ở qua AirBnb</MenuItem>
           <MenuItem>Trung tâm trợ giúp</MenuItem>
         </Menu>
+        {/* Search Menu appear when searching on Search Locaiton Input */}
       </AppBar>
     </Box>
   );
