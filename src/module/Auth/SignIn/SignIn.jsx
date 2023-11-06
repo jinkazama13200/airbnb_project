@@ -1,28 +1,26 @@
-import React from 'react'
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import React from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { object, string } from "yup";
-import { useUserContext } from '../../../context/UserContext';
-import { useForm } from 'react-hook-form';
+import { useUserContext } from "../../../context/UserContext";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from '@tanstack/react-query';
-import { signIn } from '../../../apis/userApi';
-import { Box, Button } from '@mui/material';
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "../../../apis/userApi";
+import { Box, Button } from "@mui/material";
 
 const styleSign = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
 export default function SignIn() {
-
-  
   const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
@@ -50,7 +48,6 @@ export default function SignIn() {
     resolver: yupResolver(signInSchema),
   });
 
-
   const {
     mutate: handleSignin,
     isLoading,
@@ -72,40 +69,34 @@ export default function SignIn() {
   //   return <Navigate to={redirectTo || "/"} replace />;
   // }
 
-
-
-
   return (
     <>
       <Box sx={{ ...styleSign, width: 400 }}>
         <div>
-          <h2 >Đăng nhập</h2>
+          <h2>Đăng nhập</h2>
         </div>
         <hr />
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label htmlFor="accountSign">Tài khoản</label>
-              <input id='accountSign' type="text" />
+              <input id="accountSign" type="text" />
             </div>
             <div>
               <label htmlFor="passSign">Tài khoản</label>
-              <input id='passSign' type="text" />
+              <input id="passSign" type="text" />
             </div>
             <Button
-            fullWidth="100%"
-            variant="contained"
-            type="submit"
-            disabled={isLoading}
-          >
-            Đăng Ký
-          </Button>
+              fullWidth
+              variant="contained"
+              type="submit"
+              disabled={isLoading}
+            >
+              Đăng Ký
+            </Button>
           </form>
         </div>
-
-
-
       </Box>
     </>
-  )
+  );
 }
