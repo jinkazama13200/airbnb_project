@@ -378,6 +378,7 @@ export default function Header() {
             <Divider />
             <MenuItem>Cho thuê chỗ ở qua AirBnb</MenuItem>
             <MenuItem>Trung tâm trợ giúp</MenuItem>
+            {currentUser && <MenuItem onClick={handleSignOutContext}>Đăng xuất</MenuItem> }
           </Menu>
         </AppBar>
       </Box>
@@ -395,7 +396,7 @@ export default function Header() {
       >
         <div>
 
-          <SignIn />
+          <SignIn handleCloseSignIn = {handleCloseSignIn}  />
         </div>
       </Modal>
 
