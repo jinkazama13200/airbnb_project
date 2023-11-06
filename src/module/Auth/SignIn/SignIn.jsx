@@ -20,9 +20,9 @@ const styleSign = {
   p: 4,
 };
 
-export default function SignIn() {
+export default function SignIn({ handleCloseSignIn }) {
 
-  
+
   const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
@@ -42,6 +42,7 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors },
+
   } = useForm({
     defaultValues: {
       email: "",
@@ -52,27 +53,35 @@ export default function SignIn() {
 
 
   const {
-    mutate: handleSignin,
+    mutate: handleSignIn,
     isLoading,
     error,
   } = useMutation({
     mutationFn: (payload) => signIn(payload),
     onSuccess: (data) => {
       handleSignInContext(data);
+
+      handleCloseSignIn()
     },
   });
 
-  const onSubmit = (values) => {
-    handleSignin(values);
+  const onSubmitSignIn = (values) => {
+    handleSignIn(values);
   };
 
+  
+    const onErrorSignIn = (error) => {
+      console.log(error);
+  
+      //Gọi API đăng kí
+    };
+
+    
   // //CurrentUser khác null => user đã đăng nhập => điều hướng về Home
   // if (currentUser) {
   //   const redirectTo = searchParams.get("redirectTo");
   //   return <Navigate to={redirectTo || "/"} replace />;
   // }
-
-
 
 
   return (
@@ -83,29 +92,26 @@ export default function SignIn() {
         </div>
         <hr />
         <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <label htmlFor="accountSign">Tài khoản</label>
-              <input id='accountSign' type="text" />
-            </div>
-            <div>
-              <label htmlFor="passSign">Tài khoản</label>
-              <input id='passSign' type="text" />
-            </div>
-            <Button
-            fullWidth="100%"
+          <form onSubmit={handleSubmit(onSubmitSignIn,onErrorSignIn)}>
+          <div>
+            <label htmlFor="accountSign">Tài khoản</label>
+            <input id='accountSign' type="text" {...register("email")} />
+          </div>
+          <div>
+            <label htmlFor="passSign">Tài khoản</label>
+            <input id='passSign' type="text" {...register("password")} />
+          </div>
+          <Button
+
             variant="contained"
             type="submit"
             disabled={isLoading}
           >
-            Đăng Ký
+            Đăng Nhập
           </Button>
-          </form>
-        </div>
-
-
-
-      </Box>
+        </form>
+      </div>
+    </Box >
     </>
   )
 }
