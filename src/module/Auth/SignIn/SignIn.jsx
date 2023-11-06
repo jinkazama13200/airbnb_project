@@ -20,7 +20,7 @@ const styleSign = {
   p: 4,
 };
 
-export default function SignIn() {
+export default function SignIn({handleCloseSignIn}) {
   const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
@@ -85,7 +85,7 @@ export default function SignIn() {
         </div>
         <hr />
         <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmitSignIn)}>
             <div>
               <label htmlFor="accountSign">Tài khoản</label>
               <input id="accountSign" type="text" />
@@ -95,7 +95,7 @@ export default function SignIn() {
               <input id="passSign" type="text" />
             </div>
             <Button
-              fullWidth
+              fullWidth="100%"
               variant="contained"
               type="submit"
               disabled={isLoading}
