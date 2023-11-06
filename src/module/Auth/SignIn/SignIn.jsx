@@ -65,12 +65,6 @@ export default function SignIn({ handleCloseSignIn }) {
     handleSignIn(values);
   };
 
-  const onErrorSignIn = (error) => {
-    console.log(error);
-
-    //Gọi API đăng kí
-  };
-
   // //CurrentUser khác null => user đã đăng nhập => điều hướng về Home
   // if (currentUser) {
   //   const redirectTo = searchParams.get("redirectTo");
@@ -88,11 +82,11 @@ export default function SignIn({ handleCloseSignIn }) {
           <form onSubmit={handleSubmit(onSubmitSignIn)}>
             <div>
               <label htmlFor="accountSign">Tài khoản</label>
-              <input id="accountSign" type="text" />
+              <input {...register("email")} id="accountSign" type="text" />
             </div>
             <div>
               <label htmlFor="passSign">Tài khoản</label>
-              <input id="passSign" type="text" />
+              <input {...register("password")} id="passSign" type="text" />
             </div>
             <Button
               fullWidth

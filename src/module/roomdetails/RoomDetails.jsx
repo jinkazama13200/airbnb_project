@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { Fragment, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   BookingRoom,
   getRoomById,
@@ -37,6 +37,7 @@ import CountertopsIcon from "@mui/icons-material/Countertops";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import RoomComments from "./RoomComments/RoomComments";
+import { useUserContext } from "../../context/UserContext";
 
 const SecondaryButton = styled(Button)`
   text-transform: none;
@@ -50,6 +51,7 @@ const BookingButton = styled(Button)`
 `;
 
 export default function RoomDetails() {
+  const { currentUser } = useUserContext();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [guestQuantity, setGuestQuantity] = useState(1);
@@ -67,7 +69,27 @@ export default function RoomDetails() {
 
   const { mutate: handleBookingRoom } = useMutation({
     mutationFn: (roomId) => {
-      console.log(roomId);
+      const roomObj = {
+        maPhong: roomId,
+        ngayDen: startDate,
+        ngayDi: endDate,
+        soLuongKhach: guestQuantity,
+        maNguoiDung: currentUser?.user?.id,
+      };
+      if (!currentUser) {
+        alert("chưa đăng nhặp");
+        return;
+      } else if (currentUser?.user?.role !== "USER") {
+        alert("quyền hạn k phải client");
+        return;
+      }
+      if (roomObj.ngayDen === "" || roomObj.ngayDi === "") {
+        alert("Vui lòng chọn ngày nhận phòng và trả phòng");
+      }
+      return BookingRoom(roomObj);
+    },
+    onSuccess: () => {
+      alert("thanhc ong");
     },
   });
 
@@ -533,7 +555,7 @@ export default function RoomDetails() {
           </Grid>
           {/* COMMENTS PART */}
           <Grid py={2} item xs={12}>
-            <RoomComments roomId={roomId} />
+            <RoomComments roomId={roomId} currentUser={currentUser} />
           </Grid>
         </Grid>
       </Container>

@@ -13,8 +13,8 @@ import {
   ListItemButton,
   FormControl,
   Select,
-  TextField,
   Modal,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { colorConfigs } from "../../configs/colorConfigs";
@@ -203,7 +203,7 @@ export default function Header() {
               }}
             >
               {/* LOGO */}
-              <Logo>
+              <Logo onClick={() => window.location.replace("/")}>
                 <Typography
                   sx={{ display: "block" }}
                   component="img"
@@ -250,7 +250,11 @@ export default function Header() {
                 aria-label="sing-in-sign-up-button"
                 startIcon={<MenuIcon />}
                 endIcon={
-                  <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
+                  currentUser ? (
+                    <Avatar src={currentUser?.avatar} alt={currentUser?.name} />
+                  ) : (
+                    <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
+                  )
                 }
               />
             </Box>
@@ -394,14 +398,18 @@ export default function Header() {
             onClose={handleCloseMenu}
             onClick={handleCloseMenu}
           >
-            <MenuItem onClick={handleOpenSignIn}>Đăng Nhập</MenuItem>
-            <MenuItem onClick={handleOpenSignUp}>Đăng Ký</MenuItem>
-            <Divider />
-            <MenuItem>Cho thuê chỗ ở qua AirBnb</MenuItem>
-            <MenuItem>Trung tâm trợ giúp</MenuItem>
+            {!currentUser ? (
+              <MenuItem onClick={handleOpenSignIn}>Đăng Nhập</MenuItem>
+            ) : null}
+            {!currentUser ? (
+              <MenuItem onClick={handleOpenSignUp}>Đăng Ký</MenuItem>
+            ) : null}
             {currentUser && (
               <MenuItem onClick={handleSignOutContext}>Đăng xuất</MenuItem>
             )}
+            <Divider />
+            <MenuItem>Cho thuê chỗ ở qua AirBnb</MenuItem>
+            <MenuItem>Trung tâm trợ giúp</MenuItem>
           </Menu>
         </AppBar>
       </Box>
