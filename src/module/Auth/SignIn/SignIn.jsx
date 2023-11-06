@@ -21,8 +21,6 @@ const styleSign = {
 };
 
 export default function SignIn() {
-
-  
   const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
@@ -42,7 +40,6 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors },
-
   } = useForm({
     defaultValues: {
       email: "",
@@ -60,7 +57,7 @@ export default function SignIn() {
     onSuccess: (data) => {
       handleSignInContext(data);
 
-      handleCloseSignIn()
+      handleCloseSignIn();
     },
   });
 
@@ -68,22 +65,17 @@ export default function SignIn() {
     handleSignIn(values);
   };
 
-  
-    const onErrorSignIn = (error) => {
-      console.log(error);
-  
-      //Gọi API đăng kí
-    };
+  const onErrorSignIn = (error) => {
+    console.log(error);
 
-    
+    //Gọi API đăng kí
+  };
+
   // //CurrentUser khác null => user đã đăng nhập => điều hướng về Home
   // if (currentUser) {
   //   const redirectTo = searchParams.get("redirectTo");
   //   return <Navigate to={redirectTo || "/"} replace />;
   // }
-
-
-
 
   return (
     <>
@@ -96,25 +88,22 @@ export default function SignIn() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label htmlFor="accountSign">Tài khoản</label>
-              <input id='accountSign' type="text" />
+              <input id="accountSign" type="text" />
             </div>
             <div>
               <label htmlFor="passSign">Tài khoản</label>
-              <input id='passSign' type="text" />
+              <input id="passSign" type="text" />
             </div>
             <Button
-            fullWidth="100%"
-            variant="contained"
-            type="submit"
-            disabled={isLoading}
-          >
-            Đăng Ký
-          </Button>
+              fullWidth
+              variant="contained"
+              type="submit"
+              disabled={isLoading}
+            >
+              Đăng Ký
+            </Button>
           </form>
         </div>
-
-
-
       </Box>
     </>
   );
