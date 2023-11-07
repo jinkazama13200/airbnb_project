@@ -22,7 +22,7 @@ const styleSign = {
   p: 4,
 };
 
-export default function SignIn({handleCloseSignIn}) {
+export default function SignIn({ handleCloseSignIn }) {
   const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
@@ -93,20 +93,20 @@ export default function SignIn({handleCloseSignIn}) {
            
             <div>
               <label htmlFor="accountSign">Tài khoản</label>
-              <input id='accountSign' type="text" {...register("email")} />
+              <input id="accountSign" type="text" />
             </div>
             <div>
               <label htmlFor="passSign">Tài khoản</label>
-              <input id='passSign' type="text" {...register("password")} />
+              <input id="passSign" type="text" />
             </div>
-            <ButtonSign
-
+            <Button
+              fullWidth="100%"
               variant="contained"
               type="submit"
               disabled={isLoading}
             >
-              Đăng Nhập
-            </ButtonSign>
+              Đăng Ký
+            </Button>
           </form>
         </div>
       </Box >

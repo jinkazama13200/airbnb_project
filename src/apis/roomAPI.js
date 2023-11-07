@@ -50,3 +50,12 @@ export const getRoomCommentById = async (roomId) => {
     throw error.response.data?.content;
   }
 };
+
+export const postRoomComment = async (room) => {
+  try {
+    const res = await fetcher.post("binh-luan", room);
+    return res.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};

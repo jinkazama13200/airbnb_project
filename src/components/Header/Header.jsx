@@ -11,8 +11,10 @@ import {
   IconButton,
   List,
   ListItemButton,
-  TextField,
+  FormControl,
+  Select,
   Modal,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { colorConfigs } from "../../configs/colorConfigs";
@@ -24,11 +26,10 @@ import LanguageIcon from "@mui/icons-material/Language";
 import DatePicker from "../DatePicker/DatePicker";
 import { useQuery } from "@tanstack/react-query";
 import { getLocation } from "../../apis/positionAPI";
+import { useNavigate } from "react-router-dom";
 import SignUp from "../../module/Auth/SignUp/SignUp";
 import SignIn from "../../module/Auth/SignIn/SignIn";
 import { useUserContext } from "../../context/UserContext";
-
-
 
 const Logo = styled("a")`
   display: flex;
@@ -83,13 +84,11 @@ const SearchButton = styled(Button)`
   }
 `;
 
-const StyledTextField = styled(TextField)`
-  & .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-  & .MuiInputBase-root.MuiInput-root::after {
+const StyledSelect = styled(Select)`
+  &::after {
     border-bottom: 2px solid ${colorConfigs.color.primary.main};
   }
+  width: 150px;
 `;
 
 const StyledBox = styled(Box)`
@@ -99,53 +98,48 @@ const StyledBox = styled(Box)`
 `;
 
 const styleSign = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
-
-
 export default function Header() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
+  const [locationSelected, setLocationSelected] = useState("");
   const [focusedBox, setFocusedBox] = useState(null);
+
   const open = Boolean(anchorEl);
 
-
-  //check user form context 
+  //check user form context
   const { currentUser, handleSignOutContext } = useUserContext();
-
 
   const [openSignIn, setOpenSignIn] = useState(false);
   const handleOpenSignIn = () => {
-    setOpenSignIn(true)
+    setOpenSignIn(true);
   };
-  const handleCloseSignIn = () => { setOpenSignIn(false) };
-
-
+  const handleCloseSignIn = () => {
+    setOpenSignIn(false);
+  };
 
   const [openSignUp, setOpenSignUp] = useState(false);
   const handleOpenSignUp = () => {
-    setOpenSignUp(true)
+    setOpenSignUp(true);
   };
   const handleCloseSignUp = () => {
-
-    console.log("dã chạy")
-    setOpenSignUp(false)
+    console.log("dã chạy");
+    setOpenSignUp(false);
   };
 
-
-
-
   const { data: location = [] } = useQuery({
-    queryKey: ["location"],
+    queryKey: ["locations"],
     queryFn: getLocation,
   });
 
@@ -172,18 +166,29 @@ export default function Header() {
     }
   };
 
+  const handleSelectedLocation = () => {
+    if (!locationSelected) return;
+    navigate(`roomlist/${locationSelected}`);
+    setLocationSelected("");
+  };
 
+  const renderLocation = (array) => {
+    return array.map((item) => {
+      return (
+        <MenuItem value={item.id} key={item.id}>
+          {item.tenViTri}, {item.tinhThanh}, {item.quocGia}
+        </MenuItem>
+      );
+    });
+  };
 
   // Kiểm tra user có đăng nhập hay chưa
 
-  if(currentUser !== null){
-    console.log("có đăng nhâp")
+  if (currentUser !== null) {
+    console.log("có đăng nhâp");
   }
 
-
-
   return (
-
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" variant="elevation" color="inherit">
@@ -198,7 +203,7 @@ export default function Header() {
               }}
             >
               {/* LOGO */}
-              <Logo>
+              <Logo onClick={() => window.location.replace("/")}>
                 <Typography
                   sx={{ display: "block" }}
                   component="img"
@@ -245,7 +250,11 @@ export default function Header() {
                 aria-label="sing-in-sign-up-button"
                 startIcon={<MenuIcon />}
                 endIcon={
-                  <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
+                  currentUser ? (
+                    <Avatar src={currentUser?.avatar} alt={currentUser?.name} />
+                  ) : (
+                    <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
+                  )
                 }
               />
             </Box>
@@ -267,27 +276,40 @@ export default function Header() {
           >
             {/* Find Location Part */}
             <StyledBox
+              maxWidth="fit-content"
               sx={{
                 bgcolor: focusedBox === 0 ? "white" : "",
                 borderRadius: focusedBox === 0 ? "32px" : "",
                 boxShadow:
                   focusedBox === 0 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
               }}
+              autoComplete="off"
               component="div"
-              onFocus={() => handleBoxFocus(0)}
-              onBlur={handleBoxBlur}
             >
               <Typography variant="subtitle2">Địa điểm</Typography>
-              <StyledTextField
-                variant="standard"
-                type="search"
-                placeholder="Tìm địa điểm đến"
-                inputProps={{
-                  style: {
-                    border: "none",
-                  },
-                }}
-              />
+              <FormControl>
+                <StyledSelect
+                  value={locationSelected}
+                  onChange={(e) => {
+                    setLocationSelected(e.target.value);
+                  }}
+                  label="Chọn địa điểm đến"
+                  variant="standard"
+                  sx={{
+                    bgcolor: focusedBox === 1 ? "white" : "",
+                    borderRadius: focusedBox === 1 ? "32px" : "",
+                    boxShadow:
+                      focusedBox === 1
+                        ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px`
+                        : "",
+                  }}
+                  component="div"
+                  onFocus={() => handleBoxFocus(0)}
+                  onBlur={handleBoxBlur}
+                >
+                  {location && renderLocation(location)}
+                </StyledSelect>
+              </FormControl>
             </StyledBox>
             {/* Start Date Part */}
             <StyledBox
@@ -337,7 +359,10 @@ export default function Header() {
                 <Typography variant="subtitle2">Khách</Typography>
                 <Typography variant="subtitle2">0</Typography>
               </Box>
-              <SearchButton variant="contained">
+              <SearchButton
+                onClick={handleSelectedLocation}
+                variant="contained"
+              >
                 <SearchIcon />
               </SearchButton>
             </StyledBox>
@@ -373,18 +398,21 @@ export default function Header() {
             onClose={handleCloseMenu}
             onClick={handleCloseMenu}
           >
-            <MenuItem onClick={handleOpenSignIn}>Đăng Nhập</MenuItem>
-            <MenuItem onClick={handleOpenSignUp}>Đăng Ký</MenuItem>
+            {!currentUser ? (
+              <MenuItem onClick={handleOpenSignIn}>Đăng Nhập</MenuItem>
+            ) : null}
+            {!currentUser ? (
+              <MenuItem onClick={handleOpenSignUp}>Đăng Ký</MenuItem>
+            ) : null}
+            {currentUser && (
+              <MenuItem onClick={handleSignOutContext}>Đăng xuất</MenuItem>
+            )}
             <Divider />
             <MenuItem>Cho thuê chỗ ở qua AirBnb</MenuItem>
             <MenuItem>Trung tâm trợ giúp</MenuItem>
-            {currentUser && <MenuItem onClick={handleSignOutContext}>Đăng xuất</MenuItem> }
           </Menu>
         </AppBar>
       </Box>
-
-
-
 
       {/* Modal Sign In user  */}
 
@@ -395,8 +423,7 @@ export default function Header() {
         aria-describedby="parent-modal-description"
       >
         <div>
-
-          <SignIn handleCloseSignIn = {handleCloseSignIn}  />
+          <SignIn handleCloseSignIn={handleCloseSignIn} />
         </div>
       </Modal>
 
@@ -408,7 +435,10 @@ export default function Header() {
         aria-describedby="parent-modal-description"
       >
         <div>
-          <SignUp handleCloseSignUp={handleCloseSignUp} handleOpenSignIn={handleOpenSignIn} />
+          <SignUp
+            handleCloseSignUp={handleCloseSignUp}
+            handleOpenSignIn={handleOpenSignIn}
+          />
         </div>
       </Modal>
     </>

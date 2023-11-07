@@ -9,9 +9,9 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { colorConfigs } from "../../../configs/colorConfigs";
-import { getRoomCommentById } from "../../../apis/roomAPI";
+import { getRoomCommentById, postRoomComment } from "../../../apis/roomAPI";
 import dayjs from "dayjs";
 
 const StyledTextField = styled(TextField)`
@@ -25,12 +25,33 @@ const CommentButton = styled(Button)`
   }
 `;
 
-export default function RoomComments({ roomId }) {
+export default function RoomComments({ roomId, currentUser }) {
+  const queryClient = useQueryClient();
+  const [commentTime, setCommentTime] = useState("");
   const [value, setValue] = useState("");
   const { data: comment = [] } = useQuery({
-    queryKey: ["commentRoom", roomId],
+    queryKey: ["commentRoom"],
     queryFn: () => getRoomCommentById(roomId),
     enabled: !!roomId,
+  });
+
+  const { mutate: handleSubmit } = useMutation({
+    mutationFn: (e) => {
+      e.preventDefault();
+      const currentTime = new Date();
+      setCommentTime(currentTime.toLocaleString());
+      const commentObj = {
+        maNguoiBinhLuan: currentUser?.user?.id,
+        ngayBinhLuan: commentTime,
+        noiDung: value,
+        saoBinhLuan: 5,
+      };
+      return postRoomComment(commentObj);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["commentRoom"]);
+      setValue("");
+    },
   });
 
   const renderUserCommentBox = (array) => {
@@ -60,17 +81,16 @@ export default function RoomComments({ roomId }) {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <Fragment>
       <Box p={2} elevation={3} component={Paper}>
         {/* COMMENT FORM */}
         <Box onSubmit={handleSubmit} autoComplete="off" component="form">
           <Box gap={2} component="div" sx={{ display: "flex" }}>
-            <Avatar />
+            <Avatar
+              src={currentUser ? currentUser?.user?.avatar : ""}
+              alt={currentUser?.user?.name}
+            />
             <StyledTextField
               fullWidth
               placeholder="Để lại bình luận của bạn..."
@@ -80,7 +100,7 @@ export default function RoomComments({ roomId }) {
               onChange={(e) => setValue(e.target.value)}
             />
           </Box>
-          <CommentButton sx={{ mt: 2 }} type="submit" variant="contained">
+          <CommentButton type="submit" sx={{ mt: 2 }} variant="contained">
             Bình luận
           </CommentButton>
         </Box>
