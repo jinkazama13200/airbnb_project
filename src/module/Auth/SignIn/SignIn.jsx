@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../../../apis/userApi';
 import { Box, Button } from '@mui/material';
+import { ButtonSign } from '../../../components/ButtonSign/Button';
 
 const styleSign = {
   position: 'absolute',
@@ -69,14 +70,14 @@ export default function SignIn({ handleCloseSignIn }) {
     handleSignIn(values);
   };
 
-  
-    const onErrorSignIn = (error) => {
-      console.log(error);
-  
-      //Gọi API đăng kí
-    };
 
-    
+  const onErrorSignIn = (error) => {
+    console.log(error);
+
+    //Gọi API đăng kí
+  };
+
+
   // //CurrentUser khác null => user đã đăng nhập => điều hướng về Home
   // if (currentUser) {
   //   const redirectTo = searchParams.get("redirectTo");
@@ -92,26 +93,27 @@ export default function SignIn({ handleCloseSignIn }) {
         </div>
         <hr />
         <div>
-          <form onSubmit={handleSubmit(onSubmitSignIn,onErrorSignIn)}>
-          <div>
-            <label htmlFor="accountSign">Tài khoản</label>
-            <input id='accountSign' type="text" {...register("email")} />
-          </div>
-          <div>
-            <label htmlFor="passSign">Tài khoản</label>
-            <input id='passSign' type="text" {...register("password")} />
-          </div>
-          <Button
+          <form onSubmit={handleSubmit(onSubmitSignIn, onErrorSignIn)}>
+           
+            <div>
+              <label htmlFor="accountSign">Tài khoản</label>
+              <input id='accountSign' type="text" {...register("email")} />
+            </div>
+            <div>
+              <label htmlFor="passSign">Tài khoản</label>
+              <input id='passSign' type="text" {...register("password")} />
+            </div>
+            <ButtonSign
 
-            variant="contained"
-            type="submit"
-            disabled={isLoading}
-          >
-            Đăng Nhập
-          </Button>
-        </form>
-      </div>
-    </Box >
+              variant="contained"
+              type="submit"
+              disabled={isLoading}
+            >
+              Đăng Nhập
+            </ButtonSign>
+          </form>
+        </div>
+      </Box >
     </>
   )
 }
