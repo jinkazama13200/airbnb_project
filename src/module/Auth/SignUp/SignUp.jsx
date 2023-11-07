@@ -1,8 +1,14 @@
 import { Box, Button, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react'
+import { Box, Button } from "@mui/material";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { signUp } from '../../../apis/userApi';
-import { useNavigate, useNavigationType, useSearchParams, } from "react-router-dom";
+import { signUp } from "../../../apis/userApi";
+import {
+  useNavigate,
+  useNavigationType,
+  useSearchParams,
+} from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useUserContext } from '../../../context/UserContext';
 import DatePicker from 'react-datepicker';
@@ -14,13 +20,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from "yup";
 
 const styleSign = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -52,7 +58,7 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
   const { control,
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues: {
       "name": "",
@@ -77,15 +83,12 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
   } = useMutation({
     mutationFn: (payload) => signUp(payload),
     onSuccess: () => {
-
-      handleCloseSignUp()
-      handleOpenSignIn()
+      handleCloseSignUp();
+      handleOpenSignIn();
     },
   });
 
-  const successSignUp = () => handleCloseSignUp()
-
-
+  const successSignUp = () => handleCloseSignUp();
 
   const onSubmitSignUp = (values) => {
     handleSignUp(values);
@@ -101,10 +104,8 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
   return (
     <Box sx={{ ...styleSign, width: 400 }}>
       <div>
-        <h2 >Đăng ký</h2>
-        <p  >
-          Nhanh chóng và dễ dàng.
-        </p>
+        <h2>Đăng ký</h2>
+        <p>Nhanh chóng và dễ dàng.</p>
       </div>
       <hr />
       <div>
@@ -186,23 +187,43 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
 
           {/* <div>
             <label htmlFor="emailSignUp">Email</label>
-            <input id='emailSignUp' {...register("email")} placeholder='Email' />
+            <input
+              id="emailSignUp"
+              {...register("email")}
+              placeholder="Email"
+            />
           </div>
           <div>
-            <label htmlFor='passwordSignUp'>Mật Khẩu</label>
-            <input id='passwordSignUp' {...register("password")} placeholder='Mât khẩu' />
+            <label htmlFor="passwordSignUp">Mật Khẩu</label>
+            <input
+              id="passwordSignUp"
+              {...register("password")}
+              placeholder="Mât khẩu"
+            />
           </div>
           <div>
-            <label htmlFor='nameSignUp'>Họ và Tên</label>
-            <input id='nameSignUp' {...register("name")} placeholder='Họ và tên' />
+            <label htmlFor="nameSignUp">Họ và Tên</label>
+            <input
+              id="nameSignUp"
+              {...register("name")}
+              placeholder="Họ và tên"
+            />
           </div>
           <div>
-            <label htmlFor='birthdaySignUp'>Ngày tháng năm sinh</label>
-            <input id='birthdaySignUp' {...register("birthday")} placeholder='Ngày tháng năm sinh' />
+            <label htmlFor="birthdaySignUp">Ngày tháng năm sinh</label>
+            <input
+              id="birthdaySignUp"
+              {...register("birthday")}
+              placeholder="Ngày tháng năm sinh"
+            />
           </div>
           <div>
-            <label htmlFor='phoneSignUp'>Số điện thoại</label>
-            <input id='phoneSignUp' {...register("phone")} placeholder='Số di động' />
+            <label htmlFor="phoneSignUp">Số điện thoại</label>
+            <input
+              id="phoneSignUp"
+              {...register("phone")}
+              placeholder="Số di động"
+            />
           </div>
           <div>
             <label htmlFor='genderSignUp'>Giới tính</label>
@@ -220,6 +241,5 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
         </form>
       </div>
     </Box>
-
-  )
+  );
 }
