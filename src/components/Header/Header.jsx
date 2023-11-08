@@ -405,6 +405,13 @@ export default function Header() {
               <MenuItem onClick={handleOpenSignUp}>Đăng Ký</MenuItem>
             ) : null}
             {currentUser && (
+              <MenuItem
+                onClick={() => navigate(`profile/${currentUser?.user?.id}`)}
+              >
+                Trang thông tin cá nhân
+              </MenuItem>
+            )}
+            {currentUser && (
               <MenuItem onClick={handleSignOutContext}>Đăng xuất</MenuItem>
             )}
             <Divider />

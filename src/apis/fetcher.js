@@ -12,7 +12,7 @@ const fetcher = axios.create({
 fetcher.interceptors.request.use((request) => {
   const user = JSON.parse(localStorage.getItem("currentUser"));
   if (user) {
-    request.headers.Authorization = user.token;
+    request.headers.token = user.token;
   }
   return request;
 });

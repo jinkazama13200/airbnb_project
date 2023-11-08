@@ -5,6 +5,7 @@ import RoomList from "./module/roomlist/RoomList";
 import RoomDetails from "./module/roomdetails/RoomDetails";
 import SignIn from "./module/Auth/SignIn";
 import UserProvider from "./context/UserContext";
+import UserInfo from "./module/userinfo/UserInfo";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="roomlist/:locationId" element={<RoomList />} />
             <Route path="roomdetails/:roomId" element={<RoomDetails />} />
+            <Route path="profile/:userId" element={<UserInfo />} />
 
             <Route path="sign-in" element={<SignIn />} />
           </Route>

@@ -65,12 +65,6 @@ export default function SignIn({ handleCloseSignIn }) {
     handleSignIn(values);
   };
 
-  // //CurrentUser khác null => user đã đăng nhập => điều hướng về Home
-  // if (currentUser) {
-  //   const redirectTo = searchParams.get("redirectTo");
-  //   return <Navigate to={redirectTo || "/"} replace />;
-  // }
-
   return (
     <>
       <Box sx={{ ...styleSign, width: 400 }}>

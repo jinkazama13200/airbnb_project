@@ -79,17 +79,17 @@ export default function RoomDetails() {
       if (!currentUser) {
         alert("chưa đăng nhặp");
         return;
-      } else if (currentUser?.user?.role !== "USER") {
+      }
+      if (currentUser?.user?.role !== "USER") {
         alert("quyền hạn k phải client");
         return;
       }
       if (roomObj.ngayDen === "" || roomObj.ngayDi === "") {
         alert("Vui lòng chọn ngày nhận phòng và trả phòng");
+        return;
       }
+      alert("thanh cong");
       return BookingRoom(roomObj);
-    },
-    onSuccess: () => {
-      alert("thanhc ong");
     },
   });
 

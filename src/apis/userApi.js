@@ -17,3 +17,21 @@ export const signIn = async (payload) => {
     throw error.response?.data?.content;
   }
 };
+
+export const getUserById = async (userId) => {
+  try {
+    const res = await fetcher.get(`users/${userId}`);
+    return res.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const updateUser = async (userId, payload) => {
+  try {
+    const res = await fetcher.put(`users/${userId}`, payload);
+    return res.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
