@@ -21,7 +21,6 @@ const styleSign = {
 };
 
 export default function SignIn({ handleCloseSignIn }) {
-  const navigate = useNavigate();
   const { currentUser, handleSignInContext } = useUserContext();
 
   const [searchParams] = useSearchParams();
@@ -56,7 +55,6 @@ export default function SignIn({ handleCloseSignIn }) {
     mutationFn: (payload) => signIn(payload),
     onSuccess: (data) => {
       handleSignInContext(data);
-
       handleCloseSignIn();
     },
   });
@@ -64,6 +62,13 @@ export default function SignIn({ handleCloseSignIn }) {
   const onSubmitSignIn = (values) => {
     handleSignIn(values);
   };
+
+  if (currentUser) {
+    const user = searchParams.get("user");
+    const booking = searchParams.get("booking");
+    const comment = searchParams.get("comment");
+    return <Navigate to={user || booking || comment || "/"} replace />;
+  }
 
   return (
     <>

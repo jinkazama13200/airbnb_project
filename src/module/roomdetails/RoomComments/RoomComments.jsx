@@ -13,6 +13,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { colorConfigs } from "../../../configs/colorConfigs";
 import { getRoomCommentById, postRoomComment } from "../../../apis/roomAPI";
 import dayjs from "dayjs";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const StyledTextField = styled(TextField)`
   & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -26,6 +29,8 @@ const CommentButton = styled(Button)`
 `;
 
 export default function RoomComments({ roomId, currentUser }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [value, setValue] = useState("");
   const { data: comment = [] } = useQuery({
@@ -45,7 +50,27 @@ export default function RoomComments({ roomId, currentUser }) {
         saoBinhLuan: 5,
       };
       if (!currentUser) {
-        alert("chua dang nhap");
+        toast.warn("Vui lòng đăng nhập", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        const url = `/sign-in?comment=${location.pathname}`;
+        return navigate(url);
+      } else if (commentObj.noiDung === "") {
+        toast.warn("Vui lòng nhập nội dung.", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
       return postRoomComment(commentObj);

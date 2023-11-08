@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { Fragment, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   BookingRoom,
   getRoomById,
@@ -38,6 +38,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import RoomComments from "./RoomComments/RoomComments";
 import { useUserContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
 
 const SecondaryButton = styled(Button)`
   text-transform: none;
@@ -51,6 +52,8 @@ const BookingButton = styled(Button)`
 `;
 
 export default function RoomDetails() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { currentUser } = useUserContext();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -77,18 +80,39 @@ export default function RoomDetails() {
         maNguoiDung: currentUser?.user?.id,
       };
       if (!currentUser) {
-        alert("chưa đăng nhặp");
-        return;
-      }
-      if (currentUser?.user?.role !== "USER") {
-        alert("quyền hạn k phải client");
-        return;
+        toast.warn("Vui lòng đăng nhập", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        const url = `/sign-in?booking=${location.pathname}`;
+        return navigate(url);
       }
       if (roomObj.ngayDen === "" || roomObj.ngayDi === "") {
-        alert("Vui lòng chọn ngày nhận phòng và trả phòng");
+        toast.warn("Vui lòng chọn ngày đến và ngày đi.", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
-      alert("thanh cong");
+      toast.success("Đặt phòng thành công.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return BookingRoom(roomObj);
     },
   });

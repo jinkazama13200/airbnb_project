@@ -6,6 +6,9 @@ import RoomDetails from "./module/roomdetails/RoomDetails";
 import SignIn from "./module/Auth/SignIn";
 import UserProvider from "./context/UserContext";
 import UserInfo from "./module/userinfo/UserInfo";
+import ProtectedRoute from "./router/ProtectedRoute/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -16,7 +19,9 @@ function App() {
             <Route index element={<Home />} />
             <Route path="roomlist/:locationId" element={<RoomList />} />
             <Route path="roomdetails/:roomId" element={<RoomDetails />} />
-            <Route path="profile/:userId" element={<UserInfo />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="profile/:userId" element={<UserInfo />} />
+            </Route>
 
             <Route path="sign-in" element={<SignIn />} />
           </Route>
@@ -24,6 +29,18 @@ function App() {
           <Route path="*" element={<div>NOT FOUND</div>} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </UserProvider>
   );
 }
