@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById, updateUser } from "../../apis/userApi";
+import { getUserById, updateUser, updateUserImg } from "../../apis/userApi";
 import {
   Avatar,
   Box,
@@ -17,6 +17,7 @@ import {
   Select,
   MenuItem,
   Stack,
+  Modal,
 } from "@mui/material";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -24,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { colorConfigs } from "../../configs/colorConfigs";
+import { toast } from "react-toastify";
 
 const userSchema = object({
   name: string().required("Trường hợp bắt buộc."),
@@ -64,9 +66,25 @@ const GenderSelect = styled(Select)`
   }
 `;
 
+const ImgBox = styled(Box)`
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+`;
+const ImgPreviewBox = styled(Box)`
+  padding: 10px;
+  border: 1px solid lightgrey;
+  height: 100px;
+`;
+
 export default function UserInfo() {
+  const queryCLient = useQueryClient();
   const { userId } = useParams();
   const [isEditing, setisEditing] = useState(false);
+  const [openImg, setOpenImg] = useState(false);
+  const [selectedImg, setSelectedImg] = useState(null);
+  const [imgPreview, setImgPreview] = useState("");
   const {
     register,
     handleSubmit,
@@ -80,6 +98,7 @@ export default function UserInfo() {
       phone: "",
       birthday: "",
       gender: "",
+      avatar: "",
     },
     resolver: yupResolver(userSchema),
     mode: "onTouched",
@@ -109,6 +128,55 @@ export default function UserInfo() {
     },
   });
 
+  const { mutate: handleUpdateImg } = useMutation({
+    mutationFn: () => {
+      if (!selectedImg) {
+        toast.warn("Chưa chọn hình,vui lòng chọn hình", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      const formData = new FormData();
+      formData.append("formFile", selectedImg);
+      toast.success("Cập nhật thàng công", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return updateUserImg(formData);
+    },
+    onSuccess: () => {
+      queryCLient.invalidateQueries(["userInfo"]);
+    },
+  });
+
+  const handleImgChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImg(file);
+  };
+
+  useEffect(() => {
+    const file = selectedImg;
+    if (!file) return;
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = (e) => {
+      setImgPreview(e.target.result);
+    };
+  }, [selectedImg]);
+
+  console.log(imgPreview);
+
   useEffect(() => {
     if (user) {
       setValue("name", user.name);
@@ -116,6 +184,7 @@ export default function UserInfo() {
       setValue("phone", user.phone);
       setValue("birthday", user.birthday);
       setValue("gender", user.gender);
+      setValue("role", user.role);
     }
   }, [user]);
 
@@ -138,6 +207,13 @@ export default function UserInfo() {
                   src={user.avatar}
                   alt={user.name}
                 />
+                <Typography
+                  onClick={() => setOpenImg(true)}
+                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                  variant="subtitle2"
+                >
+                  Cập nhật ảnh
+                </Typography>
               </Box>
               {/* VERIFIED PART */}
               <Box py={2} component="div">
@@ -284,6 +360,40 @@ export default function UserInfo() {
             </Box>
           </Grid>
         </Grid>
+        {/* Modal update IMG when click change img */}
+        <Modal open={openImg} onClose={() => setOpenImg(false)}>
+          <ImgBox p={2} component={Paper}>
+            <Typography variant="subtitle1">Vui lòng chọn ảnh</Typography>
+            <UserInput
+              onChange={handleImgChange}
+              type="file"
+              variant="standard"
+            />
+            <UpdateButton
+              fullWidth
+              onClick={handleUpdateImg}
+              type="submit"
+              variant="contained"
+            >
+              Cập nhật
+            </UpdateButton>
+            {/* PREVIEW IMG BOX */}
+
+            <ImgPreviewBox component="div">
+              <img
+                style={{
+                  objectFit: "contain",
+                  opacity: imgPreview ? 1 : 0,
+                  transition: "0.3s ease-in-out",
+                }}
+                width="100px"
+                height="100px"
+                src={imgPreview}
+                alt="avatar-preview"
+              />
+            </ImgPreviewBox>
+          </ImgBox>
+        </Modal>
       </Container>
     </Fragment>
   );

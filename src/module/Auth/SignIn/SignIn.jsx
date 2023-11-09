@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import { object, string } from "yup";
 import { useUserContext } from "../../../context/UserContext";
@@ -9,10 +9,12 @@ import { signInAPI } from "../../../apis/userApi";
 import {
   Box,
   Checkbox,
+  Divider,
   FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
+  Paper,
   TextField,
   Typography,
 } from "@mui/material";
@@ -25,11 +27,7 @@ const styleSign = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+  width: "300px",
 };
 
 export default function SignIn({ handleCloseSignIn, handleOpenSignUp }) {
@@ -85,82 +83,84 @@ export default function SignIn({ handleCloseSignIn, handleOpenSignUp }) {
   }
 
   return (
-    <>
-      <Box sx={{ ...styleSign, width: 400 }}>
-        <div>
-          <h2>Đăng nhập</h2>
-        </div>
-        <hr />
-        <div>
-          <form onSubmit={handleSubmit(onSubmitSignIn)}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Email"
-                  color="success"
-                  variant="outlined"
-                  fullWidth
-                  {...register("email")}
-                  error={!!errors.email}
-                  helperText={errors.email && errors.email.message}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="password"
-                  color="success"
-                  type={showPassword ? "text" : "password"}
-                  variant="outlined"
-                  fullWidth
-                  {...register("password")}
-                  error={!!errors.password}
-                  helperText={errors.password && errors.password.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="Toggle password visibility"
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                {error && <Typography color="red">{error}</Typography>}
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Lưu Tài Khoản"
-                />
-              </Grid>
+    <Fragment>
+      <Box p={4} component={Paper} sx={{ ...styleSign }}>
+        <Box
+          component="form"
+          autoComplete="off"
+          onSubmit={handleSubmit(onSubmitSignIn)}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <h2>Đăng nhập</h2>
+              <Divider />
             </Grid>
-            <ButtonSign type="submit" variant="contained">
-              Đăng Nhập
-            </ButtonSign>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                color="success"
+                variant="outlined"
+                fullWidth
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email && errors.email.message}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="password"
+                color="success"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password && errors.password.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {error && <Typography color="red">{error}</Typography>}
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox color="success" />}
+                label="Lưu Tài Khoản"
+              />
+            </Grid>
+          </Grid>
+          <ButtonSign fullWidth type="submit" variant="contained">
+            Đăng Nhập
+          </ButtonSign>
 
-            <Typography sx={{ textAlign: "center" }}>
-              Chưa có tài khoản?
-              <span
-                onClick={() => {
-                  handleCloseSignIn();
-                  handleOpenSignUp();
-                }}
-                style={{
-                  color: "#f43f5e",
-                  marginLeft: "5px ",
-                  cursor: "pointer",
-                }}
-              >
-                Đăng kí ngay
-              </span>
-            </Typography>
-          </form>
-        </div>
+          <Typography sx={{ textAlign: "center" }}>
+            Chưa có tài khoản?
+            <span
+              onClick={() => {
+                handleCloseSignIn();
+                handleOpenSignUp();
+              }}
+              style={{
+                color: "#f43f5e",
+                marginLeft: "5px ",
+                cursor: "pointer",
+              }}
+            >
+              Đăng kí ngay
+            </span>
+          </Typography>
+        </Box>
       </Box>
-    </>
+    </Fragment>
   );
 }

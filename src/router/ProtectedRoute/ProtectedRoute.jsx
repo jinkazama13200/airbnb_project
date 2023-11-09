@@ -4,10 +4,9 @@ import { useUserContext } from "../../context/UserContext";
 
 export default function ProtectedRoute({ children }) {
   const { currentUser } = useUserContext();
-  const location = useLocation();
 
   if (!currentUser) {
-    return <Navigate to={"*"} replace />;
+    return <Navigate to={"/"} replace />;
   }
 
   if (currentUser?.user?.role !== "USER") {

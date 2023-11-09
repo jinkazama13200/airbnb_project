@@ -182,12 +182,6 @@ export default function Header() {
     });
   };
 
-  // Kiểm tra user có đăng nhập hay chưa
-
-  if (currentUser !== null) {
-    console.log("có đăng nhâp");
-  }
-
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -251,7 +245,10 @@ export default function Header() {
                 startIcon={<MenuIcon />}
                 endIcon={
                   currentUser ? (
-                    <Avatar src={currentUser?.avatar} alt={currentUser?.name} />
+                    <Avatar
+                      src={currentUser?.user?.avatar}
+                      alt={currentUser?.user?.name}
+                    />
                   ) : (
                     <AccountCircleIcon sx={{ fontSize: "40px !important" }} />
                   )

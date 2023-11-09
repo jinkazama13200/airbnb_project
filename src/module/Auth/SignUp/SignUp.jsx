@@ -1,9 +1,11 @@
 import {
   Box,
   Button,
+  Divider,
   Grid,
   IconButton,
   InputAdornment,
+  Paper,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,11 +32,7 @@ const styleSign = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+  width: "300px",
 };
 
 const signUpShema = object({
@@ -102,113 +100,116 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
     //Gọi API đăng kí
   };
   return (
-    <Box sx={{ ...styleSign, width: 400 }}>
-      <div>
-        <h2>Đăng ký</h2>
-        <p>Nhanh chóng và dễ dàng.</p>
-      </div>
-      <hr />
-      <div>
-        <form onSubmit={handleSubmit(onSubmitSignUp, onErrorSignUp)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Họ Tên"
-                color="success"
-                variant="outlined"
-                fullWidth
-                {...register("name")}
-                error={!!errors.name}
-                helperText={errors.name && errors.name.message}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                label="Email"
-                color="success"
-                variant="outlined"
-                fullWidth
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email && errors.email.message}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                label="Mật khẩu"
-                color="success"
-                type={showPassword ? "text" : "password"}
-                variant="outlined"
-                fullWidth
-                {...register("password")}
-                error={!!errors.password}
-                helperText={errors.password && errors.password.message}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                label="Số Điện Thoại"
-                color="success"
-                variant="outlined"
-                fullWidth
-                {...register("phone")}
-                error={!!errors.phone}
-                helperText={errors.phone && errors.phone.message}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                type="date"
-                color="success"
-                variant="outlined"
-                fullWidth
-                {...register("birthday")}
-                error={!!errors.birthday}
-                helperText={errors.birthday && errors.birthday.message}
-              />
-            </Grid>
+    <Box p={4} component={Paper} sx={{ ...styleSign }}>
+      <Box
+        component="form"
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmitSignUp, onErrorSignUp)}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <h2>Đăng ký</h2>
+            <p>Nhanh chóng và dễ dàng.</p>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Họ Tên"
+              color="success"
+              variant="outlined"
+              fullWidth
+              {...register("name")}
+              error={!!errors.name}
+              helperText={errors.name && errors.name.message}
+            />
           </Grid>
 
-          {error && <Typography color="red">{error}</Typography>}
+          <Grid item xs={12}>
+            <TextField
+              label="Email"
+              color="success"
+              variant="outlined"
+              fullWidth
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email && errors.email.message}
+            />
+          </Grid>
 
-          <ButtonSign
-            fullWidth
-            variant="contained"
-            type="submit"
-            disabled={isLoading}
-          >
-            Đăng ký
-          </ButtonSign>
-        </form>
-        <Typography sx={{ textAlign: "center" }}>
-          <span
-            onClick={() => {
-              handleCloseSignUp();
-              handleOpenSignIn();
-            }}
-            style={{ color: "#f43f5e", marginLeft: "5px ", cursor: "pointer" }}
-          >
-            Đăng nhập
-          </span>
-        </Typography>
-      </div>
+          <Grid item xs={12}>
+            <TextField
+              label="Mật khẩu"
+              color="success"
+              type={showPassword ? "text" : "password"}
+              variant="outlined"
+              fullWidth
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password && errors.password.message}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Số Điện Thoại"
+              color="success"
+              variant="outlined"
+              fullWidth
+              {...register("phone")}
+              error={!!errors.phone}
+              helperText={errors.phone && errors.phone.message}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              type="date"
+              color="success"
+              variant="outlined"
+              fullWidth
+              {...register("birthday")}
+              error={!!errors.birthday}
+              helperText={errors.birthday && errors.birthday.message}
+            />
+          </Grid>
+        </Grid>
+
+        {error && <Typography color="red">{error}</Typography>}
+
+        <ButtonSign
+          fullWidth
+          variant="contained"
+          type="submit"
+          disabled={isLoading}
+        >
+          Đăng ký
+        </ButtonSign>
+      </Box>
+      <Typography sx={{ textAlign: "center" }}>
+        Đã có tài khoản?
+        <span
+          onClick={() => {
+            handleCloseSignUp();
+            handleOpenSignIn();
+          }}
+          style={{ color: "#f43f5e", marginLeft: "5px ", cursor: "pointer" }}
+        >
+          Đăng nhập
+        </span>
+      </Typography>
     </Box>
   );
 }

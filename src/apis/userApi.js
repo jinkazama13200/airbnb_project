@@ -35,3 +35,12 @@ export const updateUser = async (userId, payload) => {
     throw error.response.data?.content;
   }
 };
+
+export const updateUserImg = async (payload) => {
+  try {
+    const res = await fetcher.post("users/upload-avatar", payload);
+    return res.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
