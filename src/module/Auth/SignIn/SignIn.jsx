@@ -1,12 +1,24 @@
-import React from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import { object, string } from "yup";
 import { useUserContext } from "../../../context/UserContext";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "../../../apis/userApi";
-import { Box, Button } from "@mui/material";
+import { signInAPI } from "../../../apis/userApi";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { ButtonSign } from "../../../components/Button/ButtonCustom";
 
 const styleSign = {
   position: "absolute",
@@ -20,8 +32,9 @@ const styleSign = {
   p: 4,
 };
 
-export default function SignIn({ handleCloseSignIn }) {
+export default function SignIn({ handleCloseSignIn, handleOpenSignUp }) {
   const { currentUser, handleSignInContext } = useUserContext();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -45,6 +58,7 @@ export default function SignIn({ handleCloseSignIn }) {
       password: "",
     },
     resolver: yupResolver(signInSchema),
+    mode: "onTouched",
   });
 
   const {
@@ -52,7 +66,7 @@ export default function SignIn({ handleCloseSignIn }) {
     isLoading,
     error,
   } = useMutation({
-    mutationFn: (payload) => signIn(payload),
+    mutationFn: (payload) => signInAPI(payload),
     onSuccess: (data) => {
       handleSignInContext(data);
       handleCloseSignIn();
@@ -79,22 +93,71 @@ export default function SignIn({ handleCloseSignIn }) {
         <hr />
         <div>
           <form onSubmit={handleSubmit(onSubmitSignIn)}>
-            <div>
-              <label htmlFor="accountSign">Tài khoản</label>
-              <input {...register("email")} id="accountSign" type="text" />
-            </div>
-            <div>
-              <label htmlFor="passSign">Tài khoản</label>
-              <input {...register("password")} id="passSign" type="text" />
-            </div>
-            <Button
-              fullWidth
-              variant="contained"
-              type="submit"
-              disabled={isLoading}
-            >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  color="success"
+                  variant="outlined"
+                  fullWidth
+                  {...register("email")}
+                  error={!!errors.email}
+                  helperText={errors.email && errors.email.message}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="password"
+                  color="success"
+                  type={showPassword ? "text" : "password"}
+                  variant="outlined"
+                  fullWidth
+                  {...register("password")}
+                  error={!!errors.password}
+                  helperText={errors.password && errors.password.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {error && <Typography color="red">{error}</Typography>}
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox color="success" />}
+                  label="Lưu Tài Khoản"
+                />
+              </Grid>
+            </Grid>
+            <ButtonSign type="submit" variant="contained">
               Đăng Nhập
-            </Button>
+            </ButtonSign>
+
+            <Typography sx={{ textAlign: "center" }}>
+              Chưa có tài khoản?
+              <span
+                onClick={() => {
+                  handleCloseSignIn();
+                  handleOpenSignUp();
+                }}
+                style={{
+                  color: "#f43f5e",
+                  marginLeft: "5px ",
+                  cursor: "pointer",
+                }}
+              >
+                Đăng kí ngay
+              </span>
+            </Typography>
           </form>
         </div>
       </Box>

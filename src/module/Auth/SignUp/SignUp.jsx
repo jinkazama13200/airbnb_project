@@ -1,7 +1,15 @@
-import { Box, Button } from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { signUp } from "../../../apis/userApi";
+import { signUpAPI } from "../../../apis/userApi";
 import {
   useNavigate,
   useNavigationType,
@@ -11,6 +19,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useUserContext } from "../../../context/UserContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { ButtonSign } from "../../../components/Button/ButtonCustom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string } from "yup";
 
 const styleSign = {
   position: "absolute",
@@ -23,8 +36,26 @@ const styleSign = {
   boxShadow: 24,
   p: 4,
 };
+
+const signUpShema = object({
+  name: string().required("Tên không được để trống"),
+  email: string()
+    .required("email không được để trống")
+    .email("email không đúng định dạng"),
+  password: string()
+    .required("Mật khấu không được để trống")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+      "Mật khẩu ít nhất 8 kí tự, 1 kí tự hoa, 1 kí tự thường và 1 số"
+    ),
+  phone: string().required("Vui lòng nhập số điện thoại"),
+  birthday: string().required("Ngày sinh không được để trống"),
+});
+
 export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     control,
@@ -41,6 +72,8 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
       gender: true,
       role: "string",
     },
+    resolver: yupResolver(signUpShema),
+    mode: "onTouched",
   });
 
   const {
@@ -48,7 +81,7 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
     error,
     isLoading,
   } = useMutation({
-    mutationFn: (payload) => signUp(payload),
+    mutationFn: (payload) => signUpAPI(payload),
     onSuccess: () => {
       handleCloseSignUp();
       handleOpenSignIn();
@@ -77,64 +110,104 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
       <hr />
       <div>
         <form onSubmit={handleSubmit(onSubmitSignUp, onErrorSignUp)}>
-          <div>
-            <label htmlFor="emailSignUp">Email</label>
-            <input
-              id="emailSignUp"
-              {...register("email")}
-              placeholder="Email"
-            />
-          </div>
-          <div>
-            <label htmlFor="passwordSignUp">Mật Khẩu</label>
-            <input
-              id="passwordSignUp"
-              {...register("password")}
-              placeholder="Mât khẩu"
-            />
-          </div>
-          <div>
-            <label htmlFor="nameSignUp">Họ và Tên</label>
-            <input
-              id="nameSignUp"
-              {...register("name")}
-              placeholder="Họ và tên"
-            />
-          </div>
-          <div>
-            <label htmlFor="birthdaySignUp">Ngày tháng năm sinh</label>
-            <input
-              id="birthdaySignUp"
-              {...register("birthday")}
-              placeholder="Ngày tháng năm sinh"
-            />
-          </div>
-          <div>
-            <label htmlFor="phoneSignUp">Số điện thoại</label>
-            <input
-              id="phoneSignUp"
-              {...register("phone")}
-              placeholder="Số di động"
-            />
-          </div>
-          <div>
-            <label htmlFor="genderSignUp">Giới tính</label>
-            <input
-              id="genderSignUp"
-              {...register("gender")}
-              placeholder="Giới tính"
-            />
-          </div>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Họ Tên"
+                color="success"
+                variant="outlined"
+                fullWidth
+                {...register("name")}
+                error={!!errors.name}
+                helperText={errors.name && errors.name.message}
+              />
+            </Grid>
 
-          <Button
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                color="success"
+                variant="outlined"
+                fullWidth
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email && errors.email.message}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Mật khẩu"
+                color="success"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password && errors.password.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Số Điện Thoại"
+                color="success"
+                variant="outlined"
+                fullWidth
+                {...register("phone")}
+                error={!!errors.phone}
+                helperText={errors.phone && errors.phone.message}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                type="date"
+                color="success"
+                variant="outlined"
+                fullWidth
+                {...register("birthday")}
+                error={!!errors.birthday}
+                helperText={errors.birthday && errors.birthday.message}
+              />
+            </Grid>
+          </Grid>
+
+          {error && <Typography color="red">{error}</Typography>}
+
+          <ButtonSign
             fullWidth
             variant="contained"
             type="submit"
             disabled={isLoading}
           >
             Đăng ký
-          </Button>
+          </ButtonSign>
         </form>
+        <Typography sx={{ textAlign: "center" }}>
+          <span
+            onClick={() => {
+              handleCloseSignUp();
+              handleOpenSignIn();
+            }}
+            style={{ color: "#f43f5e", marginLeft: "5px ", cursor: "pointer" }}
+          >
+            Đăng nhập
+          </span>
+        </Typography>
       </div>
     </Box>
   );

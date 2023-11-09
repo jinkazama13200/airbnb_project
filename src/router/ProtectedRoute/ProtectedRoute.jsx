@@ -7,8 +7,7 @@ export default function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (!currentUser) {
-    const url = `sign-in?user=${location.pathname}`;
-    return <Navigate to={url} replace />;
+    return <Navigate to={"*"} replace />;
   }
 
   if (currentUser?.user?.role !== "USER") {

@@ -11,9 +11,11 @@ const fetcher = axios.create({
 //REQUSEST INTERCEPTORs
 fetcher.interceptors.request.use((request) => {
   const user = JSON.parse(localStorage.getItem("currentUser"));
+
   if (user) {
     request.headers.token = user.token;
   }
+
   return request;
 });
 

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { Fragment, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   BookingRoom,
   getRoomById,
@@ -52,8 +52,6 @@ const BookingButton = styled(Button)`
 `;
 
 export default function RoomDetails() {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { currentUser } = useUserContext();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -89,8 +87,7 @@ export default function RoomDetails() {
           progress: undefined,
           theme: "light",
         });
-        const url = `/sign-in?booking=${location.pathname}`;
-        return navigate(url);
+        return;
       }
       if (roomObj.ngayDen === "" || roomObj.ngayDi === "") {
         toast.warn("Vui lòng chọn ngày đến và ngày đi.", {

@@ -430,7 +430,10 @@ export default function Header() {
         aria-describedby="parent-modal-description"
       >
         <div>
-          <SignIn handleCloseSignIn={handleCloseSignIn} />
+          <SignIn
+            handleCloseSignIn={handleCloseSignIn}
+            handleOpenSignUp={handleOpenSignUp}
+          />
         </div>
       </Modal>
 

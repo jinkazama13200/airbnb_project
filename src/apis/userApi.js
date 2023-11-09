@@ -1,6 +1,6 @@
 import fetcher from "./fetcher";
 
-export const signUp = async (payload) => {
+export const signUpAPI = async (payload) => {
   try {
     const response = await fetcher.post("auth/signup", payload);
     return response.data?.content;
@@ -9,7 +9,7 @@ export const signUp = async (payload) => {
   }
 };
 
-export const signIn = async (payload) => {
+export const signInAPI = async (payload) => {
   try {
     const response = await fetcher.post("auth/signin", payload);
     return response.data?.content;

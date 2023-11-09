@@ -13,8 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { colorConfigs } from "../../../configs/colorConfigs";
 import { getRoomCommentById, postRoomComment } from "../../../apis/roomAPI";
 import dayjs from "dayjs";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const StyledTextField = styled(TextField)`
@@ -25,12 +24,12 @@ const StyledTextField = styled(TextField)`
 const CommentButton = styled(Button)`
   &.MuiButton-root {
     background-color: ${colorConfigs.color.primary.main};
+    text-transform: none;
+    font-weight: bold;
   }
 `;
 
 export default function RoomComments({ roomId, currentUser }) {
-  const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
   const [value, setValue] = useState("");
   const { data: comment = [] } = useQuery({
@@ -59,8 +58,7 @@ export default function RoomComments({ roomId, currentUser }) {
           progress: undefined,
           theme: "light",
         });
-        const url = `/sign-in?comment=${location.pathname}`;
-        return navigate(url);
+        return;
       } else if (commentObj.noiDung === "") {
         toast.warn("Vui lòng nhập nội dung.", {
           position: "top-center",
