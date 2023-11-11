@@ -88,6 +88,7 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
   const successSignUp = () => handleCloseSignUp();
 
   const onSubmitSignUp = (values) => {
+    console.log("first")
     handleSignUp(values);
 
     //Gọi API đăng kí
@@ -95,7 +96,6 @@ export default function SignUp({ handleCloseSignUp, handleOpenSignIn }) {
 
   const onErrorSignUp = (error) => {
     console.log(error);
-
     //Gọi API đăng kí
   };
   return (
