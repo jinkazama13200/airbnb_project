@@ -186,7 +186,7 @@ export default function RoomDetails() {
           <Grid py={2} item xs={12}>
             <Grid spacing={2} container>
               {/* INFO */}
-              <Grid item xs={7}>
+              <Grid item xs={12} sm={12} md={7}>
                 <Box elevation={3} component={Paper}>
                   <Box p={2} component="div">
                     <Typography>
@@ -404,7 +404,7 @@ export default function RoomDetails() {
                 </Box>
               </Grid>
               {/* BOOKING  */}
-              <Grid item xs={5}>
+              <Grid item xs={12} sm={12} md={5}>
                 <Box elevation={3} component={Paper}>
                   {/* PRICE */}
                   <Typography p={2} color="GrayText" variant="subtitle2">

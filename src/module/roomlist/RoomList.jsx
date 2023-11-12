@@ -60,11 +60,11 @@ export default function RoomList() {
         >
           <Grid container columnSpacing={2}>
             {/* IMG */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <RoomImg src={item.hinhAnh} alt={item.tenPhong} />
             </Grid>
             {/* INFO */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <Box component="div">
                 <Typography sx={{ textDecoration: "underline" }} variant="">
                   {item.tenPhong}

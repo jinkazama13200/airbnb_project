@@ -21,10 +21,17 @@ export default function LocationList() {
     opacity: 0;
   `;
 
+  const LocationName = styled(Typography)`
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  `;
+
   const renderLocationList = (array) => {
     return array.map((item) => {
       return (
-        <Grid key={item.id} item xs={3}>
+        <Grid key={item.id} item xs={12} sm={4} md={3}>
           <Grid
             onClick={() => navigate(`/roomlist/${item.id}`)}
             sx={{
@@ -47,7 +54,7 @@ export default function LocationList() {
                   backgroundImage: `url(${item.hinhAnh})`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "cover",
-                  backgroundPosition: "center top",
+                  backgroundPosition: "center",
                   borderRadius: "5px",
                 }}
                 component="div"
@@ -68,13 +75,13 @@ export default function LocationList() {
             {/* LOCATION NAME */}
             <Grid item xs={12}>
               <Box component="div">
-                <Typography
+                <LocationName
                   sx={{ fontWeight: "bold" }}
                   variant="subtitle1"
                   component="div"
                 >
                   {item.tenViTri} - {item.tinhThanh}
-                </Typography>
+                </LocationName>
                 <Typography
                   sx={{ display: "flex", alignItems: "center" }}
                   variant="subtitle2"

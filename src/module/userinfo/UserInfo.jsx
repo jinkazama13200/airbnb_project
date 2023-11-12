@@ -175,8 +175,6 @@ export default function UserInfo() {
     };
   }, [selectedImg]);
 
-  console.log(imgPreview);
-
   useEffect(() => {
     if (user) {
       setValue("name", user.name);
@@ -192,8 +190,8 @@ export default function UserInfo() {
     <Fragment>
       <Container>
         <Grid mt="50px" spacing={2} component="div" container>
-          <Grid item xs={4}>
-            <Box component={Paper} p={2}>
+          <Grid item xs={12} sm={12} md={4}>
+            <Box component={Paper} elevation={3} p={2}>
               {/* USER IMG */}
               <Box
                 sx={{
@@ -248,8 +246,8 @@ export default function UserInfo() {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={8}>
-            <Box component={Paper} px={10} py={2}>
+          <Grid item xs={12} sm={12} md={8}>
+            <Box component={Paper} elevation={3} px={2} py={2}>
               <Box component="div">
                 <Typography fontWeight="bold" variant="h4">
                   Xin chào,tôi là {user.name}

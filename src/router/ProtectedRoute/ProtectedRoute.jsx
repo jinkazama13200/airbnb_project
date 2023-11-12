@@ -1,11 +1,12 @@
 import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useParams } from "react-router-dom";
 import { useUserContext } from "../../context/UserContext";
 
 export default function ProtectedRoute({ children }) {
+  const { userId } = useParams();
   const { currentUser } = useUserContext();
 
-  if (!currentUser) {
+  if (!currentUser || currentUser?.user?.id != userId) {
     return <Navigate to={"/"} replace />;
   }
 

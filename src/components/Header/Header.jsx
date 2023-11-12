@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,14 +15,15 @@ import {
   Select,
   Modal,
   Avatar,
+  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { colorConfigs } from "../../configs/colorConfigs";
 import AirBnb from "../../assets/img/logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ScreenSearchDesktopIcon from "@mui/icons-material/ScreenSearchDesktop";
 import SearchIcon from "@mui/icons-material/Search";
-import LanguageIcon from "@mui/icons-material/Language";
 import DatePicker from "../DatePicker/DatePicker";
 import { useQuery } from "@tanstack/react-query";
 import { getLocation } from "../../apis/positionAPI";
@@ -93,7 +94,7 @@ const StyledSelect = styled(Select)`
 
 const StyledBox = styled(Box)`
   padding: 10px 20px;
-  border-radius: 32px;
+  border-radius: 50px;
   cursor: pointer;
 `;
 
@@ -115,13 +116,17 @@ export default function Header() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [locationSelected, setLocationSelected] = useState("");
   const [focusedBox, setFocusedBox] = useState(null);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);
+  const [openSearchModal, setOpenSearchModal] = useState(false);
+
+  const isMobileScreen = useMediaQuery("(max-width:425px)");
 
   const open = Boolean(anchorEl);
 
   //check user form context
   const { currentUser, handleSignOutContext } = useUserContext();
 
-  const [openSignIn, setOpenSignIn] = useState(false);
   const handleOpenSignIn = () => {
     setOpenSignIn(true);
   };
@@ -129,13 +134,18 @@ export default function Header() {
     setOpenSignIn(false);
   };
 
-  const [openSignUp, setOpenSignUp] = useState(false);
   const handleOpenSignUp = () => {
     setOpenSignUp(true);
   };
   const handleCloseSignUp = () => {
-    console.log("dã chạy");
     setOpenSignUp(false);
+  };
+  const handleOpenSearchModal = () => {
+    setOpenSearchModal(true);
+  };
+
+  const handleCloseSearchModal = () => {
+    setOpenSearchModal(false);
   };
 
   const { data: location = [] } = useQuery({
@@ -171,6 +181,12 @@ export default function Header() {
     navigate(`roomlist/${locationSelected}`);
     setLocationSelected("");
   };
+  //  selected Location func for Mobile Screen
+  const handleSelectedLocationOnMobile = () => {
+    if (!locationSelected) return;
+    navigate(`roomlist/${locationSelected}`);
+    setOpenSearchModal(false);
+  };
 
   const renderLocation = (array) => {
     return array.map((item) => {
@@ -183,7 +199,7 @@ export default function Header() {
   };
 
   return (
-    <>
+    <Fragment>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" variant="elevation" color="inherit">
           <Toolbar sx={{ transition: "0.3s all" }}>
@@ -207,35 +223,39 @@ export default function Header() {
                 />
               </Logo>
               {/* List Buttons*/}
-              <Box sx={{ m: "auto" }} component="div">
-                <List sx={{ display: "flex", gap: "10px" }}>
-                  <ListButton
-                    disableTouchRipple
-                    onClick={() => handleSelectedButton("item1")}
-                    selected={selectedButton === "item1"}
-                  >
-                    Chỗ Ở
-                  </ListButton>
-                  <ListButton
-                    disableTouchRipple
-                    onClick={() => handleSelectedButton("item2")}
-                    selected={selectedButton === "item2"}
-                  >
-                    Trải Nghiệm
-                  </ListButton>
-                  <ListButton
-                    disableTouchRipple
-                    onClick={() => handleSelectedButton("item3")}
-                    selected={selectedButton === "item3"}
-                  >
-                    Trải Nghiệm Trực Tuyến
-                  </ListButton>
-                </List>
-              </Box>
-              {/*Choose Language Button */}
-              <IconButton>
-                <LanguageIcon />
-              </IconButton>
+              {!isMobileScreen ? (
+                <Box sx={{ m: "auto" }} component="div">
+                  <List sx={{ display: "flex", gap: "10px" }}>
+                    <ListButton
+                      disableTouchRipple
+                      onClick={() => handleSelectedButton("item1")}
+                      selected={selectedButton === "item1"}
+                    >
+                      Chỗ Ở
+                    </ListButton>
+                    <ListButton
+                      disableTouchRipple
+                      onClick={() => handleSelectedButton("item2")}
+                      selected={selectedButton === "item2"}
+                    >
+                      Trải Nghiệm
+                    </ListButton>
+                    <ListButton
+                      disableTouchRipple
+                      onClick={() => handleSelectedButton("item3")}
+                      selected={selectedButton === "item3"}
+                    >
+                      Trải Nghiệm Trực Tuyến
+                    </ListButton>
+                  </List>
+                </Box>
+              ) : null}
+              {/* Search Location Button for Mobible Screen */}
+              {isMobileScreen ? (
+                <IconButton onClick={handleOpenSearchModal}>
+                  <ScreenSearchDesktopIcon fontSize="large" />
+                </IconButton>
+              ) : null}
               {/* Signin/Signup Button */}
               <MainButton
                 onClick={handleOpenMenu}
@@ -258,112 +278,102 @@ export default function Header() {
           </Toolbar>
 
           {/* Search System */}
-          <Box
-            sx={{
-              bgcolor: focusedBox !== null ? "lightgrey" : "",
-              display: "flex",
-              borderRadius: "50px",
-              border: "1px solid lightgrey",
-              m: "auto",
-              marginBottom: "10px",
-              transition: "0.3s ease-in-out",
-            }}
-            autoComplete="off"
-            component="div"
-          >
-            {/* Find Location Part */}
-            <StyledBox
-              maxWidth="fit-content"
+          {!isMobileScreen ? (
+            <Box
               sx={{
-                bgcolor: focusedBox === 0 ? "white" : "",
-                borderRadius: focusedBox === 0 ? "32px" : "",
-                boxShadow:
-                  focusedBox === 0 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+                bgcolor: focusedBox !== null ? "lightgrey" : "",
+                display: "flex",
+                borderRadius: "50px",
+                border: "1px solid lightgrey",
+                m: "auto",
+                marginBottom: "10px",
+                transition: "0.3s ease-in-out",
               }}
               autoComplete="off"
               component="div"
             >
-              <Typography variant="subtitle2">Địa điểm</Typography>
-              <FormControl>
-                <StyledSelect
-                  value={locationSelected}
-                  onChange={(e) => {
-                    setLocationSelected(e.target.value);
-                  }}
-                  label="Chọn địa điểm đến"
-                  variant="standard"
-                  sx={{
-                    bgcolor: focusedBox === 1 ? "white" : "",
-                    borderRadius: focusedBox === 1 ? "32px" : "",
-                    boxShadow:
-                      focusedBox === 1
-                        ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px`
-                        : "",
-                  }}
-                  component="div"
-                  onFocus={() => handleBoxFocus(0)}
-                  onBlur={handleBoxBlur}
-                >
-                  {location && renderLocation(location)}
-                </StyledSelect>
-              </FormControl>
-            </StyledBox>
-            {/* Start Date Part */}
-            <StyledBox
-              sx={{
-                bgcolor: focusedBox === 1 ? "white" : "",
-                borderRadius: focusedBox === 1 ? "32px" : "",
-                boxShadow:
-                  focusedBox === 1 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
-              }}
-              component="div"
-              onFocus={() => handleBoxFocus(1)}
-              onBlur={handleBoxBlur}
-            >
-              <Typography variant="subtitle2">Nhận phòng</Typography>
-              <DatePicker variant="standard" type="date" />
-            </StyledBox>
-            {/* End Date Part */}
-            <StyledBox
-              sx={{
-                bgcolor: focusedBox === 2 ? "white" : "",
-                borderRadius: focusedBox === 2 ? "32px" : "",
-                boxShadow:
-                  focusedBox === 2 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
-              }}
-              component="div"
-              onFocus={() => handleBoxFocus(2)}
-              onBlur={handleBoxBlur}
-            >
-              <Typography variant="subtitle2">Trả phòng</Typography>
-              <DatePicker variant="standard" type="date" />
-            </StyledBox>
-            {/* Guest Part */}
-            <StyledBox
-              sx={{
-                display: "flex",
-                gap: "5px",
-                bgcolor: focusedBox === 3 ? "white" : "",
-                borderRadius: focusedBox === 3 ? "32px" : "",
-                boxShadow:
-                  focusedBox === 3 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
-              }}
-              component="div"
-              onFocus={() => handleBoxFocus(3)}
-              onBlur={handleBoxBlur}
-            >
-              <Box component="div">
-                <Typography variant="subtitle2">Khách</Typography>
-                <Typography variant="subtitle2">0</Typography>
-              </Box>
-              <SearchButton
-                onClick={handleSelectedLocation}
-                variant="contained"
+              {/* Find Location Part */}
+              <StyledBox
+                maxWidth="fit-content"
+                sx={{
+                  bgcolor: focusedBox === 0 ? "white" : "",
+                  borderRadius: focusedBox === 0 ? "50px" : "",
+                  boxShadow:
+                    focusedBox === 0 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+                }}
+                autoComplete="off"
+                component="div"
               >
-                <SearchIcon />
-              </SearchButton>
-            </StyledBox>
-          </Box>
+                <Typography variant="subtitle2">Địa điểm</Typography>
+                <FormControl>
+                  <StyledSelect
+                    value={locationSelected}
+                    onChange={(e) => {
+                      setLocationSelected(e.target.value);
+                    }}
+                    variant="standard"
+                    component="div"
+                    onFocus={() => handleBoxFocus(0)}
+                    onBlur={handleBoxBlur}
+                  >
+                    {location && renderLocation(location)}
+                  </StyledSelect>
+                </FormControl>
+              </StyledBox>
+              {/* Start Date Part */}
+              <StyledBox
+                sx={{
+                  bgcolor: focusedBox === 1 ? "white" : "",
+                  boxShadow:
+                    focusedBox === 1 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+                }}
+                component="div"
+                onFocus={() => handleBoxFocus(1)}
+                onBlur={handleBoxBlur}
+              >
+                <Typography variant="subtitle2">Nhận phòng</Typography>
+                <DatePicker variant="standard" type="date" />
+              </StyledBox>
+              {/* End Date Part */}
+              <StyledBox
+                sx={{
+                  bgcolor: focusedBox === 2 ? "white" : "",
+                  boxShadow:
+                    focusedBox === 2 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+                }}
+                component="div"
+                onFocus={() => handleBoxFocus(2)}
+                onBlur={handleBoxBlur}
+              >
+                <Typography variant="subtitle2">Trả phòng</Typography>
+                <DatePicker variant="standard" type="date" />
+              </StyledBox>
+              {/* Guest Part */}
+              <StyledBox
+                sx={{
+                  display: "flex",
+                  gap: "5px",
+                  bgcolor: focusedBox === 3 ? "white" : "",
+                  boxShadow:
+                    focusedBox === 3 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+                }}
+                component="div"
+                onFocus={() => handleBoxFocus(3)}
+                onBlur={handleBoxBlur}
+              >
+                <Box component="div">
+                  <Typography variant="subtitle2">Khách</Typography>
+                  <Typography variant="subtitle2">0</Typography>
+                </Box>
+                <SearchButton
+                  onClick={handleSelectedLocation}
+                  variant="contained"
+                >
+                  <SearchIcon />
+                </SearchButton>
+              </StyledBox>
+            </Box>
+          ) : null}
 
           {/* Menu open when onclick by MainButton */}
           <Menu
@@ -419,7 +429,6 @@ export default function Header() {
       </Box>
 
       {/* Modal Sign In user  */}
-
       <Modal
         open={openSignIn}
         onClose={handleCloseSignIn}
@@ -448,6 +457,119 @@ export default function Header() {
           />
         </div>
       </Modal>
-    </>
+
+      {/* Search System when click Search Location button for Mobile Screen */}
+      {isMobileScreen ? (
+        <Modal open={openSearchModal} onClose={handleCloseSearchModal}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              bgcolor: focusedBox != null ? "lightgrey" : "white",
+              borderRadius: "50px",
+              border: "1px solid lightgrey",
+              m: "auto",
+              marginBottom: "10px",
+              transition: "0.3s ease-in-out",
+            }}
+            component="div"
+          >
+            {/* Find Location Part */}
+            <StyledBox
+              sx={{
+                textAlign: "center",
+                bgcolor: focusedBox === 0 ? "white" : "",
+                borderRadius: focusedBox === 0 ? "50px" : "",
+                boxShadow:
+                  focusedBox === 0 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+              }}
+              component="div"
+            >
+              <Typography variant="subtitle2">Địa điểm</Typography>
+              <FormControl>
+                <StyledSelect
+                  sx={{ width: "300px" }}
+                  value={locationSelected}
+                  onChange={(e) => {
+                    setLocationSelected(e.target.value);
+                  }}
+                  variant="standard"
+                  component="div"
+                  onFocus={() => handleBoxFocus(0)}
+                  onBlur={handleBoxBlur}
+                >
+                  {location && renderLocation(location)}
+                </StyledSelect>
+              </FormControl>
+            </StyledBox>
+            {/* Start Date Part */}
+            <StyledBox
+              sx={{
+                textAlign: "center",
+                bgcolor: focusedBox === 1 ? "white" : "",
+                boxShadow:
+                  focusedBox === 1 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+              }}
+              component="div"
+              onFocus={() => handleBoxFocus(1)}
+              onBlur={handleBoxBlur}
+            >
+              <Typography variant="subtitle2">Nhận phòng</Typography>
+              <DatePicker
+                sx={{ width: "300px" }}
+                variant="standard"
+                type="date"
+              />
+            </StyledBox>
+            {/* End Date Part */}
+            <StyledBox
+              sx={{
+                textAlign: "center",
+                bgcolor: focusedBox === 2 ? "white" : "",
+                boxShadow:
+                  focusedBox === 2 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+              }}
+              component="div"
+              onFocus={() => handleBoxFocus(2)}
+              onBlur={handleBoxBlur}
+            >
+              <Typography variant="subtitle2">Trả phòng</Typography>
+              <DatePicker
+                sx={{ width: "300px" }}
+                variant="standard"
+                type="date"
+              />
+            </StyledBox>
+            {/* Guest Part */}
+            <StyledBox
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "5px",
+                bgcolor: focusedBox === 3 ? "white" : "",
+                boxShadow:
+                  focusedBox === 3 ? ` rgba(0, 0, 0, 0.35) 0px 5px 15px` : "",
+              }}
+              component="div"
+              onFocus={() => handleBoxFocus(3)}
+              onBlur={handleBoxBlur}
+            >
+              <Box component="div">
+                <Typography variant="subtitle2">Khách</Typography>
+                <Typography variant="subtitle2">0</Typography>
+              </Box>
+              <SearchButton
+                onClick={handleSelectedLocationOnMobile}
+                variant="contained"
+              >
+                <SearchIcon />
+              </SearchButton>
+            </StyledBox>
+          </Box>
+        </Modal>
+      ) : null}
+    </Fragment>
   );
 }
