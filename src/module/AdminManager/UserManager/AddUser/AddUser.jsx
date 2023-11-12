@@ -54,9 +54,16 @@ export default function AddUser({ handleCloseAddUser }) {
     const [showPassword, setShowPassword] = useState(false);
 
     const [valueGender, setValueGender] = useState(true);
+    const [valueAdmin, setValueAdmin] = useState(true);
 
     const handleChangeGender = () => {
         setValueGender(!valueGender);
+        // console.log(first)
+    };
+
+
+    const handleChangeAdmin = () => {
+        setValueAdmin(!valueAdmin);
         // console.log(first)
     };
 
@@ -73,7 +80,7 @@ export default function AddUser({ handleCloseAddUser }) {
             phone: "",
             birthday: "",
             gender: valueGender,
-            role: "string",
+            role: valueAdmin,
         },
         resolver: yupResolver(signUpShema),
         mode: "onTouched",
@@ -85,7 +92,7 @@ export default function AddUser({ handleCloseAddUser }) {
         isLoading,
     } = useMutation({
         mutationFn: (payload) => {
-            const formData = { ...payload, gender: valueGender.toString() }
+            const formData = { ...payload, gender: valueGender.toString(), role: valueAdmin ? "ADMIN" : "USER" }
 
 
 
@@ -206,6 +213,21 @@ export default function AddUser({ handleCloseAddUser }) {
                                 >
                                     <FormControlLabel value={false} control={<Radio />} label="Female" />
                                     <FormControlLabel value={true} control={<Radio />} label="Male" />
+                                </RadioGroup>
+                            </FormControl>
+
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl>
+                                <FormLabel id="demo-controlled-radio-buttons-group">Quyền</FormLabel>
+                                <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={valueAdmin}
+                                    onChange={handleChangeAdmin}
+                                >
+                                    <FormControlLabel value={false} control={<Radio />} label="User" />
+                                    <FormControlLabel value={true} control={<Radio />} label="Admin" />
                                 </RadioGroup>
                             </FormControl>
 
