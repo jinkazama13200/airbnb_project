@@ -37,3 +37,36 @@ export const addUserAPI = async (payload) => {
     throw error.response?.data?.content;
   }
 };
+
+
+export const getInfoID = async (userId) => {
+  try {
+    const response = await fetcher.get(`/users/${userId}`);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const editUser = async (userId, payload) => {
+  try {
+    const response = await fetcher.put(`/users/${userId}`, payload);
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+
+export const removeUser = async (id) => {
+  try {
+    const response = await fetcher.delete("/users", {
+      params: {
+        id: id || undefined,
+      },
+    });
+    return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
