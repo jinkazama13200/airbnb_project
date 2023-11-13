@@ -19,7 +19,7 @@ import Loading from "../../../../components/Loading";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
 import ModalErrorCustomer from "../../../../components/Modal/ModalErrorCustomer";
 import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
-
+import DoneIcon from '@mui/icons-material/Done';
 
 const styleSign = {
   position: "absolute",
@@ -228,10 +228,7 @@ export default function EditUser({ userId, onClose }) {
       {showSuccessModal && (
         <ModalSuccess>
           <ModalContent>
-            <img
-              style={{ width: "120px", marginTop: "10px" }}
-              src="/img/animation_lnfs5c14_small.gif"
-              alt="confirm"
+            <DoneIcon
             />
             <Typography
               variant="h5"

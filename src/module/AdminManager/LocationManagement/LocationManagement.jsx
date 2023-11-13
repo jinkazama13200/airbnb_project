@@ -30,13 +30,13 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import AddRooms from "./AddRooms";
-import UpdateRoom from "./UpdateRoom";
-import ModalUpLoadImg from "./ModalUpLoadImg";
+import AddLocation from "./AddLocation";
+import { getLocation } from "../../../apis/positionAPI";
+import { removeLocation } from "../../../apis/locationApi";
 import Loading from "../../../components/Loading";
-import { ButtonSign } from "../../../components/Button/ButtonCustom";
-import { deleteRoom, getRooms } from "../../../apis/roomManager";
 import { ModalContent, ModalWidth } from "../../../components/ModalPopup/ModalPopup";
+import UpdateLocation from "./UpdateLocation/UpdateLocation";
+import { ButtonSign } from "../../../components/Button/ButtonCustom";
 import ModalErrorCustomer from "../../../components/Modal/ModalErrorCustomer";
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
@@ -113,30 +113,30 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function RoomManager() {
+export default function LocationManagement() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
-  const [openAddRoom, setOpenAddRoom] = useState(false);
+  const [openAddLocation, setOpenAddLocation] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredRooms, setFilteredRooms] = useState([]);
-  const [openStack, setOpenStack] = useState(false);
   const [openErro, setOpenErro] = useState(false);
-  const [modalUpImg, setModalImg] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredLocation, setFilteredLocation] = useState([]);
+  const [openStack, setOpenStack] = useState(false);
+
   const queryClient = useQueryClient();
 
-  const { data: roomList = [], isLoading } = useQuery({
-    queryKey: ["roomList"],
-    queryFn: getRooms,
+  const { data: location = [], isLoading } = useQuery({
+    queryKey: ["location"],
+    queryFn: getLocation,
   });
 
-  const { mutate: handleDeleteRoom } = useMutation({
-    mutationFn: (id) => deleteRoom(id),
+  const { mutate: handleDeleteLocation } = useMutation({
+    mutationFn: (id) => removeLocation(id),
     onSuccess: () => {
       setOpenStack(true);
-      queryClient.invalidateQueries({ queryKey: ["roomList"] });
+      queryClient.invalidateQueries({ queryKey: ["location"] });
     },
     onError: (err) => {
       setOpenErro(true);
@@ -145,7 +145,7 @@ export default function RoomManager() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - roomList.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - location.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -157,7 +157,7 @@ export default function RoomManager() {
   };
 
   const handleDeleteAndReload = () => {
-    handleDeleteRoom(selectedRoom);
+    handleDeleteLocation(selectedLocation);
     setOpenDelete(false);
   };
 
@@ -171,10 +171,10 @@ export default function RoomManager() {
 
   // Function to filter users based on search query
   const filterLocations = () => {
-    const filteredData = roomList.filter((room) =>
-      room.tenViTri?.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredData = location.filter((location) =>
+      location.tenViTri.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setFilteredRooms(filteredData);
+    setFilteredLocation(filteredData);
   };
 
   // Attach an event handler to update searchQuery when the input value changes
@@ -189,10 +189,10 @@ export default function RoomManager() {
   };
 
   useEffect(() => {
-    if (roomList) {
-      setFilteredRooms(roomList);
+    if (location) {
+      setFilteredLocation(location); // Ban đầu, filteredLocation bằng danh sách customers
     }
-  }, [roomList]);
+  }, [location]);
 
   if (isLoading) {
     return <Loading />;
@@ -200,6 +200,8 @@ export default function RoomManager() {
 
   return (
     <>
+
+      {/* <Box height={100} /> */}
       <div style={{ textAlign: 'right' }}>
         <Box
           sx={{
@@ -211,14 +213,13 @@ export default function RoomManager() {
         >
           <TextField
             fullWidth
-            label="Tìm kiếm theo tên phòng"
+            label="Tìm kiếm theo vị trí"
             id="fullWidth"
             color="secondary"
             value={searchQuery}
             onChange={handleSearchInputChange} // Handle input change
             onKeyDown={handleEnterKeyDown}
           />
-
           <Button
             variant="contained"
             color="info"
@@ -233,10 +234,10 @@ export default function RoomManager() {
           variant="contained"
           color="secondary"
           onClick={() => {
-            setOpenAddRoom(true);
+            setOpenAddLocation(true);
           }}
         >
-          Thêm phòng
+          Thêm vị trí
         </ButtonSign>
       </div>
 
@@ -245,21 +246,20 @@ export default function RoomManager() {
           <TableHead>
             <StyledTableRow>
               <StyledTableCell component="th" scope="row">
-                STT
+                Mã vị trí
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
                 Tên
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Đổi Hình Ảnh
+                Hình Ảnh
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Khách
+                Quốc gia
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Phòng
+                Tỉnh Thành
               </StyledTableCell>
-
               <StyledTableCell component="th" scope="row">
                 Thao tác
               </StyledTableCell>
@@ -267,35 +267,20 @@ export default function RoomManager() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? filteredRooms.slice(
+              ? filteredLocation.slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
               )
-              : filteredRooms
-            ).map((room) => (
-              <StyledTableRow key={room.id}>
-                <StyledTableCell>{room.id}</StyledTableCell>
-                <StyledTableCell>{room.tenPhong}</StyledTableCell>
+              : filteredLocation
+            ).map((location) => (
+              <StyledTableRow key={location.id}>
+                <StyledTableCell>{location.id}</StyledTableCell>
+                <StyledTableCell>{location.tenViTri}</StyledTableCell>
                 <StyledTableCell>
-                  {modalUpImg && (
-                    <ModalUpLoadImg
-                      roomId={room.id}
-                      onClose={setModalImg}
-                      roomImg={room.hinhAnh}
-                    />
-                  )}
-                  <img
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setModalImg(true)}
-                    src={room.hinhAnh}
-                    width={50}
-                    height={50}
-                    alt=""
-                  />
+                  <img src={location.hinhAnh} width={50} height={50} alt="" />
                 </StyledTableCell>
-                <StyledTableCell>{room.khach}</StyledTableCell>
-                <StyledTableCell>{room.phongNgu}</StyledTableCell>
-
+                <StyledTableCell>{location.quocGia}</StyledTableCell>
+                <StyledTableCell>{location.tinhThanh}</StyledTableCell>
                 <StyledTableCell>
                   <Box>
                     <Tooltip title="chỉnh sửa" placement="top">
@@ -304,19 +289,19 @@ export default function RoomManager() {
                         size="large"
                         onClick={() => {
                           setOpen(true);
-                          setSelectedRoom(room.id);
+                          setSelectedLocation(location.id);
                         }}
                       >
                         <EditIcon fontSize="inherit" color="primary" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Xóa phòng" placement="bottom">
+                    <Tooltip title="Xóa vị trí" placement="bottom">
                       <IconButton
                         aria-label="delete"
                         size="large"
                         onClick={() => {
                           setOpenDelete(true);
-                          setSelectedRoom(room.id);
+                          setSelectedLocation(location.id);
                         }}
                       >
                         <DeleteIcon fontSize="inherit" color="error" />
@@ -337,7 +322,7 @@ export default function RoomManager() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                 colSpan={6}
-                count={roomList.length}
+                count={location.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -363,25 +348,25 @@ export default function RoomManager() {
       >
         <ModalWidth>
           {/* Hiển thị form hoặc nội dung modal */}
-          <UpdateRoom
+          <UpdateLocation
             onClose={() => {
               setOpen(false);
             }}
-            roomId={selectedRoom}
+            locationId={selectedLocation}
           />
         </ModalWidth>
       </Modal>
 
       {/* Modal add user */}
       <Modal
-        open={openAddRoom}
+        open={openAddLocation}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <ModalWidth>
-          <AddRooms
+          <AddLocation
             onClose={() => {
-              setOpenAddRoom(false);
+              setOpenAddLocation(false);
             }}
           />
         </ModalWidth>
@@ -407,7 +392,7 @@ export default function RoomManager() {
         }}
       >
         <ModalContent>
-          <ConfirmationNumberIcon />
+          <ConfirmationNumberIcon/>
           <Typography
             variant="h6"
             sx={{
@@ -431,7 +416,6 @@ export default function RoomManager() {
       </Modal>
 
       {/* Modal báo lỗi */}
-
       <ModalErrorCustomer openErro={openErro} setOpenErro={setOpenErro} />
 
       <Stack spacing={2} sx={{ width: "100%" }}>

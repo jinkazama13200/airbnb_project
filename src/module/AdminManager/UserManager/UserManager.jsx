@@ -1,4 +1,4 @@
-import { Alert, Box, Button, IconButton, Modal, Snackbar, Stack, TableFooter, TablePagination, TextField, Typography, styled } from '@mui/material'
+import { Alert, Box, Button, IconButton, Modal, Snackbar, Stack, TableFooter, TablePagination, TextField, Tooltip, Typography, styled } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -25,6 +25,9 @@ import PropTypes from "prop-types";
 import Loading from '../../../components/Loading';
 import SearchIcon from "@mui/icons-material/Search";
 import _ from 'lodash';
+import { StyledTableCell, StyledTableRow } from './index';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 
@@ -269,20 +272,16 @@ export default function UserManager(props) {
             </div>
 
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table sx={{ minWidth: 500 }} aria-label="simple table">
                     <TableHead>
-                        <TableRow>
-                            <TableCell>STT</TableCell>
-                            <TableCell >Họ và tên</TableCell>
-                            <TableCell >Email</TableCell>
-                            {/* <TableCell >Mật khẩu</TableCell> */}
-                            {/* <TableCell >Số di động</TableCell> */}
-                            <TableCell>Ngày sinh</TableCell>
-                            {/* <TableCell >Hình đại diện</TableCell> */}
-                            {/* <TableCell >Giới tính</TableCell> */}
-                            <TableCell >Quyền</TableCell>
-                            <TableCell >Chỉnh sửa</TableCell>
-                        </TableRow>
+                        <StyledTableRow>
+                            <StyledTableCell>STT</StyledTableCell>
+                            <StyledTableCell >Họ và tên</StyledTableCell>
+                            <StyledTableCell >Email</StyledTableCell>
+                            <StyledTableCell>Ngày sinh</StyledTableCell>
+                            <StyledTableCell >Quyền</StyledTableCell>
+                            <StyledTableCell >Chỉnh sửa</StyledTableCell>
+                        </StyledTableRow>
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
@@ -292,34 +291,51 @@ export default function UserManager(props) {
                             )
                             : filteredUsers
                         ).map((row) => (
-                            <TableRow
+                            <StyledTableRow
                                 key={row.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+
                             >
-                                <TableCell component="th" scope="row">
+                                <StyledTableCell component="th" scope="row">
                                     {row.id}
-                                </TableCell>
-                                <TableCell >{row.name}</TableCell>
-                                <TableCell >{row.email}</TableCell>
+                                </StyledTableCell>
+                                <StyledTableCell >{row.name}</StyledTableCell>
+                                <StyledTableCell >{row.email}</StyledTableCell>
                                 {/* <TableCell >{row.password}</TableCell> */}
                                 {/* <TableCell >{row.phone}</TableCell> */}
-                                <TableCell >{row.birthday}</TableCell>
+                                <StyledTableCell >{row.birthday}</StyledTableCell>
                                 {/* <TableCell >{row.avatar}</TableCell> */}
                                 {/* <TableCell >{row.gender}</TableCell> */}
-                                <TableCell >{row.role}</TableCell>
-                                <TableCell >
-                                    <Button onClick={() => handleOpenEditUser(row.id)} >
-                                        <ModeEditIcon />
-                                    </Button>
-                                    <Button onClick={() => {
-                                        setOpenDelete(true);
-                                        setIDEditAddUser(row.id);
-                                    }} >
-                                        <DeleteForeverIcon />
-                                    </Button>
+                                <StyledTableCell >{row.role}</StyledTableCell>
+                                <StyledTableCell >
 
-                                </TableCell>
-                            </TableRow>
+                                    <Box>
+                                        <Tooltip title="chỉnh sửa" placement="top">
+                                            <IconButton
+                                                aria-label="update"
+                                                size="large"
+                                                onClick={() => handleOpenEditUser(row.id)} 
+                                            >
+                                                <EditIcon fontSize="inherit" color="primary" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Xóa user" placement="bottom">
+                                            <IconButton
+                                                aria-label="delete"
+                                                size="large"
+                                                onClick={() => {
+                                                    setOpenDelete(true);
+                                                    setIDEditAddUser(row.id);}}
+                                            >
+                                                <DeleteIcon fontSize="inherit" color="error" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Box>
+
+                                    
+                                   
+
+                                </StyledTableCell>
+                            </StyledTableRow>
                         ))}
                     </TableBody>
 

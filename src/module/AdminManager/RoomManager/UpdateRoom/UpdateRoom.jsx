@@ -16,20 +16,15 @@ import {
   MenuItem,
 } from "@mui/material";
 import Switch from "@mui/material/Switch";
-// import { ButtonMain } from "../../../../../Components/Button";
 import { object, string, number } from "yup";
 import { getRoomDetailsById } from "../../../../apis/roomAPI";
-import {  getLocationManager } from "../../../../apis/locationApi";
+import { getLocationManager } from "../../../../apis/locationApi";
 import { updateRoom } from "../../../../apis/roomManager";
 import Loading from "../../../../components/Loading";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
 import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
 import ModalErrorCustomer from "../../../../components/Modal/ModalErrorCustomer";
-// import { getRoomDetail, updateRoom } from "../../../../../APIs/roomApi";
-// import { getLocation } from "../../../../../APIs/locationApi";
-// import { ModalContent, ModalSuccess } from "../../../../../Components/Modal";
-// import Loading from "../../../../../Components/Loading";
-// import ModalErro from "../../../../../Components/Modal/ModalErro";
+import DoneIcon from '@mui/icons-material/Done';
 
 
 
@@ -470,11 +465,7 @@ export default function UpdateRoom({ onClose, roomId }) {
       {showSuccessModal && (
         <ModalSuccess>
           <ModalContent>
-            <img
-              style={{ width: "120px", marginTop: "10px" }}
-              src="/img/animation_lnfs5c14_small.gif"
-              alt="confirm"
-            />
+            <DoneIcon />
             <Typography
               variant="h5"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}

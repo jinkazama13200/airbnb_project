@@ -9,6 +9,8 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import UserManager from "./module/AdminManager/UserManager";
 import AdminProtectedRouter from "./routers/AdminProtectedRouter/AdminProtectedRouter";
 import RoomManager from "./module/AdminManager/RoomManager/RoomManager";
+import Booking from "./module/AdminManager/Booking/Booking";
+import LocationManagement from "./module/AdminManager/LocationManagement";
 
 function App() {
   return (
@@ -23,12 +25,13 @@ function App() {
             <Route path="sign-in" element={<SignIn />} />
           </Route>
 
-          <Route element={<AdminProtectedRouter/>}>
-          <Route path="/manager" element={<AdminLayout />}>
-            <Route path="user-manager" element={<UserManager />} />
-            <Route path="room-manager" element={<RoomManager/>} />
-          </Route>
-
+          <Route element={<AdminProtectedRouter />}>
+            <Route path="/manager" element={<AdminLayout />}>
+              <Route path="user-manager" element={<UserManager />} />
+              <Route path="room-manager" element={<RoomManager />} />
+              <Route path="booking-manager" element={<Booking />} />
+              <Route path="location-manager" element={<LocationManagement />} />
+            </Route>
           </Route>
           <Route path="*" element={<div>NOT FOUND</div>} />
         </Routes>

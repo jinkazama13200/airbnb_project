@@ -4,7 +4,6 @@ import {
   Button,
   Modal,
   TextField,
-  Typography,
   Table,
   TableBody,
   TableContainer,
@@ -18,6 +17,7 @@ import {
   Stack,
   TableHead,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "./index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,17 +30,15 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import AddRooms from "./AddRooms";
-import UpdateRoom from "./UpdateRoom";
-import ModalUpLoadImg from "./ModalUpLoadImg";
+import AddBooking from "./AddBooking/AddBooking";
+import UpdateBooking from "./UpdateBooking";
+import dayjs from "dayjs";
+import { getRoomById } from "../../../apis/roomAPI";
+import { removeBooked } from "../../../apis/roomManager";
 import Loading from "../../../components/Loading";
-import { ButtonSign } from "../../../components/Button/ButtonCustom";
-import { deleteRoom, getRooms } from "../../../apis/roomManager";
 import { ModalContent, ModalWidth } from "../../../components/ModalPopup/ModalPopup";
-import ModalErrorCustomer from "../../../components/Modal/ModalErrorCustomer";
+import { ButtonSign } from "../../../components/Button/ButtonCustom";
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-
-
 
 
 
@@ -113,39 +111,34 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function RoomManager() {
+export default function Booking() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
-  const [openAddRoom, setOpenAddRoom] = useState(false);
+  const [openAddUser, setOpenAddUser] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedBooked, setSelectedBooked] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [openStack, setOpenStack] = useState(false);
-  const [openErro, setOpenErro] = useState(false);
-  const [modalUpImg, setModalImg] = useState(false);
+
   const queryClient = useQueryClient();
 
-  const { data: roomList = [], isLoading } = useQuery({
-    queryKey: ["roomList"],
-    queryFn: getRooms,
+  const { data: listBooked = [], isLoading } = useQuery({
+    queryKey: ["listBooked"],
+    queryFn: getRoomById,
   });
 
-  const { mutate: handleDeleteRoom } = useMutation({
-    mutationFn: (id) => deleteRoom(id),
+  const { mutate: handleDeleteUser } = useMutation({
+    mutationFn: (id) => removeBooked(id),
     onSuccess: () => {
       setOpenStack(true);
-      queryClient.invalidateQueries({ queryKey: ["roomList"] });
-    },
-    onError: (err) => {
-      setOpenErro(true);
+      queryClient.invalidateQueries({ queryKey: ["listBooked"] });
     },
   });
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - roomList.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listBooked.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -157,7 +150,7 @@ export default function RoomManager() {
   };
 
   const handleDeleteAndReload = () => {
-    handleDeleteRoom(selectedRoom);
+    handleDeleteUser(selectedBooked);
     setOpenDelete(false);
   };
 
@@ -169,30 +162,29 @@ export default function RoomManager() {
     setOpenStack(false);
   };
 
-  // Function to filter users based on search query
-  const filterLocations = () => {
-    const filteredData = roomList.filter((room) =>
-      room.tenViTri?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filterUsers = () => {
+    let filteredData = listBooked.filter((room) =>
+      room.maPhong.toString().includes(searchQuery.toString())
     );
-    setFilteredRooms(filteredData);
+
+    setFilteredUsers(filteredData);
   };
 
-  // Attach an event handler to update searchQuery when the input value changes
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   const handleEnterKeyDown = (event) => {
     if (event.key === "Enter") {
-      filterLocations();
+      filterUsers();
     }
   };
 
   useEffect(() => {
-    if (roomList) {
-      setFilteredRooms(roomList);
+    if (listBooked) {
+      setFilteredUsers(listBooked);
     }
-  }, [roomList]);
+  }, [listBooked]);
 
   if (isLoading) {
     return <Loading />;
@@ -211,19 +203,18 @@ export default function RoomManager() {
         >
           <TextField
             fullWidth
-            label="Tìm kiếm theo tên phòng"
+            label="Tìm kiếm tài khoản theo mã phòng"
             id="fullWidth"
             color="secondary"
             value={searchQuery}
-            onChange={handleSearchInputChange} // Handle input change
+            onChange={handleSearchInputChange}
             onKeyDown={handleEnterKeyDown}
           />
-
           <Button
             variant="contained"
             color="info"
             onClick={() => {
-              filterLocations();
+              filterUsers();
             }}
           >
             <SearchIcon />
@@ -233,10 +224,10 @@ export default function RoomManager() {
           variant="contained"
           color="secondary"
           onClick={() => {
-            setOpenAddRoom(true);
+            setOpenAddUser(true);
           }}
         >
-          Thêm phòng
+          Thêm Đặt Phòng
         </ButtonSign>
       </div>
 
@@ -248,75 +239,64 @@ export default function RoomManager() {
                 STT
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Tên
+                Mã Phòng
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Đổi Hình Ảnh
+                Ngày Đến
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Khách
+                Ngày Đi
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
-                Phòng
+                Số Lượng Khách
               </StyledTableCell>
-
               <StyledTableCell component="th" scope="row">
-                Thao tác
+                Mã người dùng
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                Chức năng
               </StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? filteredRooms.slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-              )
-              : filteredRooms
+              ? filteredUsers.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : filteredUsers
             ).map((room) => (
               <StyledTableRow key={room.id}>
                 <StyledTableCell>{room.id}</StyledTableCell>
-                <StyledTableCell>{room.tenPhong}</StyledTableCell>
+                <StyledTableCell>{room.maPhong}</StyledTableCell>
                 <StyledTableCell>
-                  {modalUpImg && (
-                    <ModalUpLoadImg
-                      roomId={room.id}
-                      onClose={setModalImg}
-                      roomImg={room.hinhAnh}
-                    />
-                  )}
-                  <img
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setModalImg(true)}
-                    src={room.hinhAnh}
-                    width={50}
-                    height={50}
-                    alt=""
-                  />
+                  {dayjs(room.ngayDen).format("DD/MM/YYYY")}
                 </StyledTableCell>
-                <StyledTableCell>{room.khach}</StyledTableCell>
-                <StyledTableCell>{room.phongNgu}</StyledTableCell>
-
+                <StyledTableCell>
+                  {dayjs(room.ngayDi).format("DD/MM/YYYY")}
+                </StyledTableCell>
+                <StyledTableCell>{room.soLuongKhach}</StyledTableCell>
+                <StyledTableCell>{room.maNguoiDung}</StyledTableCell>
                 <StyledTableCell>
                   <Box>
                     <Tooltip title="chỉnh sửa" placement="top">
                       <IconButton
-                        aria-label="update"
                         size="large"
                         onClick={() => {
                           setOpen(true);
-                          setSelectedRoom(room.id);
+                          setSelectedBooked(room.id);
                         }}
                       >
                         <EditIcon fontSize="inherit" color="primary" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Xóa phòng" placement="bottom">
+
+                    <Tooltip title="Xóa đặt phòng" placement="bottom">
                       <IconButton
-                        aria-label="delete"
                         size="large"
                         onClick={() => {
                           setOpenDelete(true);
-                          setSelectedRoom(room.id);
+                          setSelectedBooked(room.id);
                         }}
                       >
                         <DeleteIcon fontSize="inherit" color="error" />
@@ -337,7 +317,7 @@ export default function RoomManager() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                 colSpan={6}
-                count={roomList.length}
+                count={listBooked.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -363,25 +343,25 @@ export default function RoomManager() {
       >
         <ModalWidth>
           {/* Hiển thị form hoặc nội dung modal */}
-          <UpdateRoom
+          <UpdateBooking
             onClose={() => {
               setOpen(false);
             }}
-            roomId={selectedRoom}
+            userId={selectedBooked}
           />
         </ModalWidth>
       </Modal>
 
       {/* Modal add user */}
       <Modal
-        open={openAddRoom}
+        open={openAddUser}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <ModalWidth>
-          <AddRooms
+          <AddBooking
             onClose={() => {
-              setOpenAddRoom(false);
+              setOpenAddUser(false);
             }}
           />
         </ModalWidth>
@@ -407,7 +387,7 @@ export default function RoomManager() {
         }}
       >
         <ModalContent>
-          <ConfirmationNumberIcon />
+          <ConfirmationNumberIcon/>
           <Typography
             variant="h6"
             sx={{
@@ -416,7 +396,7 @@ export default function RoomManager() {
               color: " #f43f5e",
             }}
           >
-            Bạn có chắc chắn xóa tài khoản?
+            Bạn có chắc chắn xóa phòng này?
           </Typography>
 
           <ButtonSign onClick={handleDeleteAndReload}>Xác nhận</ButtonSign>
@@ -429,10 +409,6 @@ export default function RoomManager() {
           </ButtonSign>
         </ModalContent>
       </Modal>
-
-      {/* Modal báo lỗi */}
-
-      <ModalErrorCustomer openErro={openErro} setOpenErro={setOpenErro} />
 
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar

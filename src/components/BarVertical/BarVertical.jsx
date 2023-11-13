@@ -22,6 +22,8 @@ import { useAdminContext } from '../../context/AdminContext/AdminContext';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import { useNavigate } from 'react-router-dom';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 
 const drawerWidth = 240;
 
@@ -92,17 +94,27 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function BarVertical({ children }) {
 
-    const navigate =useNavigate()
+    const navigate = useNavigate()
 
     const departmentManager = [{
         nameDepartment: 'Quản lý người dùng',
         logoDepartment: <RecentActorsIcon />,
-        handleDepartment: ()=>  navigate("/manager/user-manager")
+        handleDepartment: () => navigate("/manager/user-manager")
+    },
+    {
+        nameDepartment: 'Quản lý đặt phòng',
+        logoDepartment: <CalendarMonthIcon />,
+        handleDepartment: () => navigate("/manager/booking-manager")
+    },
+    {
+        nameDepartment: 'Quản lý địa điểm',
+        logoDepartment: <AddLocationAltIcon />,
+        handleDepartment: () => navigate("/manager/location-manager")
     },
     {
         nameDepartment: 'Quản lý phòng',
         logoDepartment: <KingBedIcon />,
-        handleDepartment: ()=>  navigate("/manager/room-manager")
+        handleDepartment: () => navigate("/manager/room-manager")
     }]
 
     const theme = useTheme();
@@ -113,25 +125,6 @@ export default function BarVertical({ children }) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            {/* <AppBar position="fixed" open={openBarVertical}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            ...(openBarVertical && { display: 'none' }),
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
-                    </Typography>
-                </Toolbar>
-            </AppBar> */}
             <Drawer variant="permanent" sx={{ zIndex: 0 }} open={openBarVertical}>
                 <DrawerHeader>
                     <IconButton >
@@ -161,34 +154,13 @@ export default function BarVertical({ children }) {
                                 </ListItemIcon>
                                 <ListItemText primary={text.nameDepartment} sx={{ opacity: openBarVertical ? 1 : 0 }} />
                             </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
                 <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: openBarVertical ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: openBarVertical ? 3 : 'auto',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: openBarVertical ? 1 : 0 }} />
-                            </ListItemButton>
+
                         </ListItem>
+                        
                     ))}
                 </List>
+                
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
