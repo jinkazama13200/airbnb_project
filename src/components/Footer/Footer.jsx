@@ -8,10 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import styled from "@emotion/styled";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-
- const LinkFooter = styled.a`
+const LinkFooter = styled.a`
   color: black;
   text-decoration: none;
   margin-bottom: 4px;
@@ -21,16 +20,14 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
   }
 `;
 
- const TiFooterH2  = styled.p`
+const TiFooterH2 = styled.p`
   font-size: 20px;
   font-weight: bold;
 `;
 
- const DFooter = styled.div`
+const DFooter = styled.div`
   background-color: #f7f7f7;
-  margin: 0;
 `;
-
 
 export default function Footer() {
   return (
@@ -57,19 +54,14 @@ export default function Footer() {
               <TiFooterH2>Đón tiếp khách </TiFooterH2>
               <List>
                 <ListItem>
-                  <LinkFooter href="#">
-                  Cho thuê nhà trên Airbnb
-                  </LinkFooter>
+                  <LinkFooter href="#">Cho thuê nhà trên Airbnb</LinkFooter>
                 </ListItem>
                 <ListItem>
-                  <LinkFooter href="#">
-                  AirCover cho Chủ nhà
-                  </LinkFooter>
+                  <LinkFooter href="#">AirCover cho Chủ nhà</LinkFooter>
                 </ListItem>
                 <ListItem>
                   <LinkFooter href="#">Diễn đàn cộng đồng</LinkFooter>
                 </ListItem>
-               
               </List>
             </Grid>
 
@@ -85,11 +77,9 @@ export default function Footer() {
                 <ListItem>
                   <LinkFooter href="#">Chỗ ở khẩn cấp Airbnb.org</LinkFooter>
                 </ListItem>
-              
               </List>
             </Grid>
 
-           
             <Grid item xs={12}>
               <Divider />
             </Grid>
@@ -115,13 +105,22 @@ export default function Footer() {
                   },
                 }}
               >
-                © 2021 Airbnb, Inc 
+                © 2021 Airbnb, Inc
               </Typography>
-              <FiberManualRecordIcon sx={{margin: "0 20px"}} fontSize="small"/>
-              <LinkFooter  href="#">Quyền riêng tư </LinkFooter>
-              <FiberManualRecordIcon sx={{margin: "0 10px"}} fontSize="small"/>
+              <FiberManualRecordIcon
+                sx={{ margin: "0 20px" }}
+                fontSize="small"
+              />
+              <LinkFooter href="#">Quyền riêng tư </LinkFooter>
+              <FiberManualRecordIcon
+                sx={{ margin: "0 10px" }}
+                fontSize="small"
+              />
               <LinkFooter href="#">Điều khoản</LinkFooter>
-              <FiberManualRecordIcon sx={{margin: "0 10px"}} fontSize="small"/>
+              <FiberManualRecordIcon
+                sx={{ margin: "0 10px" }}
+                fontSize="small"
+              />
               <LinkFooter href="#">Sơ đồ trang web</LinkFooter>
             </Grid>
           </Grid>

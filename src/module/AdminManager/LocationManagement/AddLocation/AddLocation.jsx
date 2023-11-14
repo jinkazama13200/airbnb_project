@@ -7,11 +7,11 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addLocation } from "../../../../apis/locationApi";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
-import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
-import DoneIcon from '@mui/icons-material/Done';
-
-
-
+import {
+  ModalContent,
+  ModalSuccess,
+} from "../../../../components/ModalPopup/ModalPopup";
+import DoneIcon from "@mui/icons-material/Done";
 
 export default function AddLocation({ onClose }) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -31,7 +31,7 @@ export default function AddLocation({ onClose }) {
       return addLocation(payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['location']);
+      queryClient.invalidateQueries(["location"]);
       setShowSuccessModal(true);
     },
   });
@@ -109,17 +109,26 @@ export default function AddLocation({ onClose }) {
             />
           </Grid>
         </Grid>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "5px",
+          }}
+        >
           <ButtonSign variant="contained" type="submit">
             Thêm vị trí
           </ButtonSign>
-          <ButtonSign onClick={onClose}>Đóng</ButtonSign>
+          <ButtonSign variant="contained" onClick={onClose}>
+            Đóng
+          </ButtonSign>
         </Box>
       </Box>
       {showSuccessModal && (
         <ModalSuccess>
           <ModalContent>
-            <DoneIcon            />
+            <DoneIcon />
             <Typography
               variant="h5"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}

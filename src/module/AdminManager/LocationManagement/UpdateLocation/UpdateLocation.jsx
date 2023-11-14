@@ -172,7 +172,7 @@ export default function UpdateLocation({ locationId, onClose }) {
         >
           Cập Nhật
         </ButtonSign>
-        <ButtonSign onClick={onClose}>Đóng</ButtonSign>
+        <ButtonSign variant="contained" onClick={onClose}>Đóng</ButtonSign>
       </form>
 
       {showSuccessModal && (

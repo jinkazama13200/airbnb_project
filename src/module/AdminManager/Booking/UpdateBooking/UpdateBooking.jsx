@@ -14,13 +14,18 @@ import { useForm, Controller } from "react-hook-form";
 import { object, string } from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { getBooked, getRooms, updateBooking } from "../../../../apis/roomManager";
+import {
+  getBooked,
+  getRooms,
+  updateBooking,
+} from "../../../../apis/roomManager";
 import Loading from "../../../../components/Loading";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
-import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
-import DoneIcon from '@mui/icons-material/Done';
-
-
+import {
+  ModalContent,
+  ModalSuccess,
+} from "../../../../components/ModalPopup/ModalPopup";
+import DoneIcon from "@mui/icons-material/Done";
 
 const updateBookingSchema = object({
   maPhong: string().required("Mã phòng không được để trống"),
@@ -218,13 +223,14 @@ export default function UpdateBooking({ userId, onClose }) {
         >
           Cập Nhật
         </ButtonSign>
-        <ButtonSign onClick={onClose}>Đóng</ButtonSign>
+        <ButtonSign variant="contained" onClick={onClose}>
+          Đóng
+        </ButtonSign>
       </form>
 
       {showSuccessModal && (
         <ModalSuccess>
           <ModalContent>
-
             <DoneIcon />
             <Typography
               variant="h6"

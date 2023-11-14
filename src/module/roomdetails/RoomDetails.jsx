@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { Fragment, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   BookingRoom,
   getRoomById,
@@ -38,6 +38,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import RoomComments from "./RoomComments/RoomComments";
 import { useUserContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
+import LoadingPage from "../../components/LoadingPage/LoadingPage";
 
 const SecondaryButton = styled(Button)`
   text-transform: none;
@@ -57,7 +59,7 @@ export default function RoomDetails() {
   const [guestQuantity, setGuestQuantity] = useState(1);
   const { roomId } = useParams();
 
-  const { data: room = [] } = useQuery({
+  const { data: room = [], isLoading } = useQuery({
     queryKey: ["roomdetails", roomId],
     queryFn: () => getRoomDetailsById(roomId),
     enabled: !!roomId,
@@ -77,19 +79,39 @@ export default function RoomDetails() {
         maNguoiDung: currentUser?.user?.id,
       };
       if (!currentUser) {
-        alert("chưa đăng nhặp");
-        return;
-      } else if (currentUser?.user?.role !== "USER") {
-        alert("quyền hạn k phải client");
+        toast.warn("Vui lòng đăng nhập", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
       if (roomObj.ngayDen === "" || roomObj.ngayDi === "") {
-        alert("Vui lòng chọn ngày nhận phòng và trả phòng");
+        toast.warn("Vui lòng chọn ngày đến và ngày đi.", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
       }
+      toast.success("Đặt phòng thành công.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return BookingRoom(roomObj);
-    },
-    onSuccess: () => {
-      alert("thanhc ong");
     },
   });
 
@@ -123,10 +145,14 @@ export default function RoomDetails() {
     setEndDate(e.target.value);
   };
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <Fragment>
       <Container>
-        <Grid container>
+        <Grid my="50px" container>
           {/* TITLE */}
           <Grid py={2} item xs={12}>
             <Typography variant="h5" fontWeight="bold">
@@ -165,7 +191,7 @@ export default function RoomDetails() {
           <Grid py={2} item xs={12}>
             <Grid spacing={2} container>
               {/* INFO */}
-              <Grid item xs={7}>
+              <Grid item xs={12} sm={12} md={7}>
                 <Box elevation={3} component={Paper}>
                   <Box p={2} component="div">
                     <Typography>
@@ -383,7 +409,7 @@ export default function RoomDetails() {
                 </Box>
               </Grid>
               {/* BOOKING  */}
-              <Grid item xs={5}>
+              <Grid item xs={12} sm={12} md={5}>
                 <Box elevation={3} component={Paper}>
                   {/* PRICE */}
                   <Typography p={2} color="GrayText" variant="subtitle2">
@@ -493,6 +519,7 @@ export default function RoomDetails() {
                       onClick={() => handleBookingRoom(room.id)}
                       sx={{ fontWeight: "bold", mt: 1 }}
                       variant="contained"
+                      disabled={currentUser?.user?.role === "ADMIN"}
                       fullWidth
                     >
                       Đặt Phòng

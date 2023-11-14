@@ -13,6 +13,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { colorConfigs } from "../../../configs/colorConfigs";
 import { getRoomCommentById, postRoomComment } from "../../../apis/roomAPI";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const StyledTextField = styled(TextField)`
   & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -22,41 +24,64 @@ const StyledTextField = styled(TextField)`
 const CommentButton = styled(Button)`
   &.MuiButton-root {
     background-color: ${colorConfigs.color.primary.main};
+    text-transform: none;
+    font-weight: bold;
   }
 `;
 
 export default function RoomComments({ roomId, currentUser }) {
   const queryClient = useQueryClient();
-  const [commentTime, setCommentTime] = useState("");
   const [value, setValue] = useState("");
   const { data: comment = [] } = useQuery({
-    queryKey: ["commentRoom"],
+    queryKey: ["comment"],
     queryFn: () => getRoomCommentById(roomId),
     enabled: !!roomId,
   });
-
   const { mutate: handleSubmit } = useMutation({
     mutationFn: (e) => {
       e.preventDefault();
       const currentTime = new Date();
-      setCommentTime(currentTime.toLocaleString());
       const commentObj = {
+        maPhong: roomId,
         maNguoiBinhLuan: currentUser?.user?.id,
-        ngayBinhLuan: commentTime,
+        ngayBinhLuan: currentTime.toLocaleString(),
         noiDung: value,
         saoBinhLuan: 5,
       };
+      if (!currentUser) {
+        toast.warn("Vui lòng đăng nhập", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      } else if (commentObj.noiDung === "") {
+        toast.warn("Vui lòng nhập nội dung.", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
       return postRoomComment(commentObj);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["commentRoom"]);
+      queryClient.invalidateQueries(["comment"]);
       setValue("");
     },
   });
 
   const renderUserCommentBox = (array) => {
     return array.map((item) => {
-      const date = dayjs(item.ngayBinhLuan).format("DD-MM-YYYY");
+      const date = dayjs(item.ngayBinhLuan).format("DD-MM-YYYY, hh:mm:ss A");
       return (
         <Box p={2} component={Paper} mb={2} key={item.id}>
           {/* USER INFO */}

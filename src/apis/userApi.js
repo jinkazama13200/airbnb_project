@@ -18,7 +18,6 @@ export const signInAPI = async (payload) => {
   }
 };
 
-
 export const getUserAPI = async () => {
   try {
     const response = await fetcher.get("users");
@@ -28,16 +27,14 @@ export const getUserAPI = async () => {
   }
 };
 
-
 export const addUserAPI = async (payload) => {
   try {
-    const response = await fetcher.post("users",payload);
+    const response = await fetcher.post("users", payload);
     return response.data?.content;
   } catch (error) {
     throw error.response?.data?.content;
   }
 };
-
 
 export const getInfoID = async (userId) => {
   try {
@@ -57,6 +54,14 @@ export const editUser = async (userId, payload) => {
   }
 };
 
+export const updateUser = async (userId, payload) => {
+  try {
+    const res = await fetcher.put(`users/${userId}`, payload);
+    return res.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
 
 export const removeUser = async (id) => {
   try {
@@ -66,6 +71,15 @@ export const removeUser = async (id) => {
       },
     });
     return response.data?.content;
+  } catch (error) {
+    throw error.response.data?.content;
+  }
+};
+
+export const updateUserImg = async (payload) => {
+  try {
+    const res = await fetcher.post("users/upload-avatar", payload);
+    return res.data?.content;
   } catch (error) {
     throw error.response.data?.content;
   }

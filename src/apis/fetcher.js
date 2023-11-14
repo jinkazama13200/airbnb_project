@@ -15,7 +15,7 @@ fetcher.interceptors.request.use((request) => {
   if (user) {
     request.headers.token = user.token;
   }
-  
+
   return request;
 });
 

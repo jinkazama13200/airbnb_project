@@ -22,12 +22,12 @@ import { getLocationManager } from "../../../../apis/locationApi";
 import { updateRoom } from "../../../../apis/roomManager";
 import Loading from "../../../../components/Loading";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
-import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
+import {
+  ModalContent,
+  ModalSuccess,
+} from "../../../../components/ModalPopup/ModalPopup";
 import ModalErrorCustomer from "../../../../components/Modal/ModalErrorCustomer";
-import DoneIcon from '@mui/icons-material/Done';
-
-
-
+import DoneIcon from "@mui/icons-material/Done";
 
 //MUI switch
 const IOSSwitch = styled((props) => (
@@ -352,7 +352,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setmayGiat(!mayGiat)}
-                  checked={mayGiat}
+                  checked={mayGiat || false}
                 />
               }
               label="mayGiat"
@@ -364,7 +364,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setbanLa(!banLa)}
-                  checked={banLa}
+                  checked={banLa || false}
                 />
               }
               label="banLa"
@@ -376,7 +376,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => settivi(!tivi)}
-                  checked={tivi}
+                  checked={tivi || false}
                 />
               }
               label="tivi"
@@ -388,7 +388,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setdieuHoa(!dieuHoa)}
-                  checked={dieuHoa}
+                  checked={dieuHoa || false}
                 />
               }
               label="dieuHoa"
@@ -400,7 +400,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setwifi(!wifi)}
-                  checked={wifi}
+                  checked={wifi || false}
                 />
               }
               label="wifi"
@@ -412,7 +412,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setbep(!bep)}
-                  checked={bep}
+                  checked={bep || false}
                 />
               }
               label="bep"
@@ -424,7 +424,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setdoXe(!doXe)}
-                  checked={doXe}
+                  checked={doXe || false}
                 />
               }
               label="doXe"
@@ -436,7 +436,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => sethoBoi(!hoBoi)}
-                  checked={hoBoi}
+                  checked={hoBoi || false}
                 />
               }
               label="hoBoi"
@@ -448,7 +448,7 @@ export default function UpdateRoom({ onClose, roomId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={() => setbanUi(!banUi)}
-                  checked={banUi}
+                  checked={banUi || false}
                 />
               }
               label="banUi"

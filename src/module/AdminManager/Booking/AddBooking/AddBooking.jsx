@@ -19,8 +19,11 @@ import { getRooms } from "../../../../apis/roomManager";
 import { BookingRoom } from "../../../../apis/roomAPI";
 import Loading from "../../../../components/Loading";
 import { ButtonSign } from "../../../../components/Button/ButtonCustom";
-import { ModalContent, ModalSuccess } from "../../../../components/ModalPopup/ModalPopup";
-import DoneIcon from '@mui/icons-material/Done';
+import {
+  ModalContent,
+  ModalSuccess,
+} from "../../../../components/ModalPopup/ModalPopup";
+import DoneIcon from "@mui/icons-material/Done";
 
 export default function AddUser({ onClose }) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -188,20 +191,22 @@ export default function AddUser({ onClose }) {
           sx={{
             display: "flex",
             alignItems: "center",
+            gap: "5px",
             justifyContent: "flex-end",
           }}
         >
           <ButtonSign variant="contained" type="submit">
             Thêm Booking
           </ButtonSign>
-          <ButtonSign onClick={onClose}>Đóng</ButtonSign>
+          <ButtonSign variant="contained" onClick={onClose}>
+            Đóng
+          </ButtonSign>
         </Box>
       </Box>
       {showSuccessModal && (
         <ModalSuccess>
           <ModalContent>
-            <DoneIcon
-            />
+            <DoneIcon />
             <Typography
               variant="h5"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
